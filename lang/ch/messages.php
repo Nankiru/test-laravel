@@ -1,0 +1,21 @@
+<?php 
+return [
+    "dashboard" => "仪表板",
+    "user_profile" => "用户资料",
+    "logout" => "注销",
+    "msm_logout" => "你确定吗？",
+    "users_list" => "用户列表",
+    "add_users" => "添加用户",
+    "name_email" => "姓名/电子邮件",
+    "position" => "位置",
+    "salary" => "薪水",
+    "location" => "地点",
+    "bod" => "出生日期",
+    "action" => "行动",
+    "fullname" => "全名",
+    "email" => "电子邮件",
+    "phone" => "电话号码",
+    "telegram" => "电报",
+    "address" => "地址",
+    "register" => "登记",
+];
