@@ -46,15 +46,15 @@
       <div class="col-lg-4">
       <div class="card mb-4">
         <div class="card-body text-center">
+          {{-- <img src="{{asset('uploads/' . session('avatar')) }}" alt="avatar" class="rounded-circle img-fluid"
+            style="width: 150px;"> --}}
         @php
-        $avatarFile = session('avatar');
+        $avatarFile = session('img');
         $avatarPath = public_path('uploads/' . $avatarFile);
         $avatarUrl = ($avatarFile && file_exists($avatarPath))
         ? asset('uploads/' . $avatarFile)
         : 'https://i.pinimg.com/736x/06/3b/bf/063bbf0665eaf9c1730bccdc5c8af1b2.jpg';
       @endphp
-        {{-- <img src="{{asset('uploads/' . session('avatar')) }}" alt="avatar" class="rounded-circle img-fluid"
-          style="width: 150px;"> --}}
           <form action="{{url('update_img_admin/'.session('id'))}}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="position-relative d-inline-block">
@@ -64,7 +64,7 @@
                 <label for="avatarUpload" class="position-absolute bottom-0 end-0 translate-middle p-2 bg-white rounded-circle shadow" style="transform: translate(-30%, -30%); cursor: pointer;">
                     <i class="bi bi-pencil-fill text-primary"></i>
                 </label>
-                <input type="file" name="avatar" id="avatarUpload" class="d-none" onchange="this.form.submit()">
+                <input type="file" name="img" id="avatarUpload" class="d-none" onchange="this.form.submit()">
             </div>
         </form>
         

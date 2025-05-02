@@ -1,101 +1,343 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Login</title>
-  <link rel="shortcut icon" type="image/png" href="{{asset('assets/images/logos/logo-icon.png')}}" />
-  <link rel="stylesheet" href="../assets/css/styles.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
-  {{-- @vite('resources/css/app.css') --}}
+  <title>Login</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link rel="shortcut icon" href="{{asset('assets/images/logos/nan-icon.png')}}" type="image/x-icon">
+
+
+  @if (session('success'))
+    <script>
+    Swal.fire({
+      title: 'Success!',
+      text: "{{ session('success') }}",
+      icon: 'success',
+      confirmButtonText: 'OK',
+      timer: 3000,
+      timerProgressBar: true
+    });
+    </script>
+  @endif
+  <style>
+    .form-panel {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      backface-visibility: hidden;
+      transform-style: preserve-3d;
+    }
+
+    .form-panel.active {
+      opacity: 1;
+      pointer-events: auto;
+      z-index: 10;
+    }
+
+    #flipWrapper.rotate-y {
+      transform: rotateY(180deg);
+    }
+
+    #flipWrapper.rotate-x-up {
+      transform: rotateX(-180deg);
+    }
+
+    #flipWrapper.rotate-x-down {
+      transform: rotateX(180deg);
+    }
+
+    .card-container {
+      perspective: 1500px;
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .flip-wrapper {
+      transition: transform 0.8s ease-in-out;
+      transform-style: preserve-3d;
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .form-panel {
+      backface-visibility: hidden;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 1rem;
+      top: 0;
+      left: 0;
+    }
+
+    .user-panel {
+      z-index: 5;
+      transform: rotateY(0deg) rotateX(0deg);
+    }
+
+    .admin-panel {
+      transform: rotateY(180deg);
+    }
+
+    .signup-panel {
+      transform: rotateX(-180deg);
+    }
+
+    .forgot-panel {
+      transform: rotateX(180deg);
+    }
+
+    .rotate-y {
+      transform: rotateY(180deg);
+    }
+
+    .rotate-x-up {
+      transform: rotateX(-180deg);
+    }
+
+    .rotate-x-down {
+      transform: rotateX(180deg);
+    }
+  </style>
+
 </head>
 
-@if (session('success'))
-  <script>
-    Swal.fire({
-    title: 'Success!',
-    text: "{{ session('success') }}",
-    icon: 'success',
-    confirmButtonText: 'OK',
-    timer: 3000,
-    timerProgressBar: true
-    });
-  </script>
-@endif
+<body class="bg-gradient-to-br from-cyan-100 to-blue-200 min-h-screen flex items-center justify-center p-4">
 
+  <div class="card-container w-full max-w-md h-[550px] transition-transform duration-500 relative py-10">
+    <div id="flipWrapper" class="flip-wrapper">
 
-<body>
-  <!--  Body Wrapper -->
-  <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
-    data-sidebar-position="fixed" data-header-position="fixed">
-    <div
-      class="position-relative overflow-hidden text-bg-light min-vh-100 d-flex align-items-center justify-content-center">
-      <div class="d-flex align-items-center justify-content-center w-100">
-        <div class="row justify-content-center w-100">
-          <div class="col-md-8 col-lg-6 col-xxl-3">
-            <div class="card mb-0">
-              <div class="card-body">
-                <a href="/login" class="d-flex justify-content-center items-center">
-                  <img src="{{asset('assets/images/logos/logo_dash.png')}}" class="w-25 p-0" alt="">
-                </a>
-                <p class="text-center">Sign in to your account</p>
-                <form action="{{url('login_submit')}}" method="POST" enctype="multipart/form-data">
-                  {{-- <p class="text-center ">{{session('status')}}</p> --}}
-                  @csrf
-                  <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Email</label>
-                    <input name="email" type="email" class="form-control" id="exampleInputEmail1"
-                      aria-describedby="emailHelp">
-                    @error('email')
-            <span class="text-red-500">{{$message}}</span>
-          @enderror
-                  </div>
-                  <div class="mb-4">
-                    <label for="exampleInputPassword1" class="form-label">Password</label>
-                    <input name="password" type="password" class="form-control showpass" id="exampleInputPassword1">
-                    @error('password')
-            <span class="text-red-500">{{$message}}</span>
-          @enderror
-                  </div>
-                  <div class="d-flex align-items-center justify-content-between mb-4">
-                    <div class="form-check">
-                      <input class="form-check-input primary" type="checkbox" onclick="myFunction()"
-                        id="flexCheckChecked">
-                      <label class="form-check-label text-dark" for="flexCheckChecked">
-                        Show Password
-                      </label>
-                    </div>
-                    <a class="text-primary fw-bold" href="login">Forgot Password ?</a>
-                  </div>
-                  <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Sign In</button>
-                  <div class="d-flex align-items-center justify-content-center">
-                    <p class="fs-4 mb-0 fw-bold">Don't have an account?</p>
-                    <a class="text-primary fw-bold ms-2" href="/register">Create an account</a>
-                  </div>
-                </form>
-              </div>
+      <!-- Admin LOGIN -->
+      <form action="{{url('admin_submit')}}" method="POST"
+        class="form-panel panel-user absolute inset-0 active bg-white shadow-2xl rounded-2xl p-8 flex flex-col justify-between">
+        @csrf
+        <div>
+          <div class="flex justify-center mb-4">
+            <img src="{{asset('assets/images/logos/nan-icon.png')}}" alt="Code Logo" width="100" alt="Logo"
+              class="w-auto h-14" />
+          </div>
+          <h2 class="text-2xl font-bold text-center text-cyan-600 mb-6 pt-6">Admin Login</h2>
+          <div class="space-y-4">
+            {{-- <div class="relative">
+              <i class="fa fa-envelope absolute left-3 top-2.5 text-gray-400"></i>
+              <input type="text" placeholder="Full name" name="email"
+                class="pl-10 pr-3 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-400 outline-none transition-all" />
+            </div> --}}
+            <div class="relative">
+              <i class="fa fa-envelope absolute left-3 top-2.5 text-gray-400"></i>
+              <input type="email" placeholder="Email address" name="email"
+                class="pl-10 pr-3 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-400 outline-none transition-all" />
+              @error('email')
+          <p>{{$message}}</p>
+        @enderror
+            </div>
+            <div class="relative">
+              <i class="fa fa-lock absolute left-3 top-3 text-gray-400"></i>
+            
+              <input type="password" placeholder="Password" name="password"
+                class="pl-10 pr-10 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-400 outline-none transition-all"
+                id="password-input" />
+            
+              <!-- Eye icon -->
+              <i class="far fa-eye absolute right-3 top-3 text-gray-500 cursor-pointer" id="show-password-toggle-icon"></i>
+            
+              @error('password')
+                <p class="text-red-500 text-sm mt-1">{{$message}}</p>
+              @enderror
+            </div>
+            <script>
+              const toggleIcon = document.getElementById('show-password-toggle-icon');
+              const passwordInput = document.getElementById('password-input');
+            
+              toggleIcon.addEventListener('click', () => {
+                const isPassword = passwordInput.type === 'password';
+                passwordInput.type = isPassword ? 'text' : 'password';
+                toggleIcon.classList.toggle('fa-eye');
+                toggleIcon.classList.toggle('fa-eye-slash');
+              });
+            </script>
+                        
+            <button type="submit"
+              class="w-full bg-cyan-500 hover:bg-cyan-600 transition text-white py-2 rounded-lg font-semibold">
+              Login
+            </button>
+            <div class="flex justify-between text-sm text-gray-600 px-1 mt-2">
+              <a onclick="flipTo('forgot')" class="hover:underline cursor-pointer">Forgot Password?</a>
+              <a onclick="flipTo('signup')" class="hover:underline cursor-pointer">Sign Up</a>
             </div>
           </div>
         </div>
+        <div class="text-center mt-6">
+          <a onclick="flipTo('admin')"
+            class="flex items-center gap-2 cursor-pointer text-cyan-600 hover:text-cyan-800 transition text-sm">
+            <i class="fas fa-repeat fa-sm rotate-180"></i>
+            Login as User
+          </a>
+        </div>
+      </form>
+
+      <!-- User LOGIN -->
+      <form action="{{url('user_login')}}" method="POST"
+        class="form-panel panel-admin absolute inset-0 bg-gradient-to-br from-cyan-500 to-sky-600 text-white shadow-2xl rounded-2xl p-8 flex flex-col justify-between"
+        style="transform: rotateY(180deg);">
+        @csrf
+        <div>
+          <div class="flex justify-center mb-4">
+            <img src="{{asset('assets/images/logos/nan-icon.png')}}" alt="Code Logo" width="100" alt="Logo"
+              class="w-auto h-14" />
+          </div>
+          <h2 class="text-2xl font-bold text-center mb-6 pt-5">User Login</h2>
+          <div class="space-y-4">
+            <div class="relative">
+              <i class="fa fa-envelope absolute left-3 top-2.5 text-white/70"></i>
+              <input type="text" placeholder="Email address" name="email"
+                class="pl-10 pr-3 py-2 w-full bg-white/10 border border-white/30 rounded-lg placeholder-white/70 text-white focus:ring-2 focus:ring-white outline-none transition-all" />
+            </div>
+            <div class="relative">
+              <i class="fa fa-lock absolute left-3 top-2.5 text-white/70"></i>
+              <input type="password" placeholder="Password" name="password"
+                class="pl-10 pr-3 py-2 w-full bg-white/10 border border-white/30 rounded-lg placeholder-white/70 text-white focus:ring-2 focus:ring-white outline-none transition-all" />
+            </div>
+            <button type="submit"
+              class="w-full bg-white text-cyan-600 font-semibold py-2 rounded-lg hover:bg-white/90 transition">
+              Login
+            </button>
+          </div>
+        </div>
+        <div class="text-center mt-6">
+          <a onclick="flipTo('user')" class="flex items-center gap-2 cursor-pointer text-white hover:underline text-sm">
+            <i class="fas fa-repeat fa-sm"></i>
+            Login as Admin
+          </a>
+        </div>
+      </form>
+
+      <!-- SIGN UP -->
+      <form action="{{url('admin_register')}}" method="POST" class="form-panel panel-signup absolute inset-0 bg-white shadow-2xl rounded-2xl p-8"
+        style="transform: rotateX(-180deg);">
+        @csrf
+        <div class="flex justify-center mb-4">
+          <img src="{{asset('assets/images/logos/nan-icon.png')}}" alt="Code Logo" width="100" alt="Logo"
+            class="w-auto h-14" />
+        </div>
+        <h2 class="text-2xl font-bold text-center text-cyan-600 mb-6">Sign Up</h2>
+        <div class="space-y-4">
+          <div class="relative">
+            <i class="fa fa-user absolute left-3 top-2.5 text-gray-400"></i>
+            <input type="text" placeholder="Full Name" name="name"
+              class="pl-10 pr-3 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-400 outline-none transition-all" />
+          </div>
+          <div class="relative">
+            <i class="fa fa-envelope absolute left-3 top-2.5 text-gray-400"></i>
+            <input type="text" placeholder="Email address" name="email"
+              class="pl-10 pr-3 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-400 outline-none transition-all" />
+          </div>
+          <div class="relative">
+            <!-- Lock icon on the left -->
+            <i class="fa fa-lock absolute left-3 top-2.5 text-gray-400"></i>
+          
+            <!-- Password input -->
+            <input type="password" placeholder="Password" name="password" id="password-register"
+              class="pl-10 pr-10 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-400 outline-none transition-all" />
+          
+            <!-- Eye icon on the right -->
+            <i class="far fa-eye absolute right-3 top-2.5 text-gray-500 cursor-pointer" id="toggle-password"></i>
+          </div>
+          <script>
+            const toggle = document.getElementById('toggle-password');
+            const passwordInput = document.getElementById('password-register');
+          
+            toggle.addEventListener('click', () => {
+              const type = passwordInput.type === 'password' ? 'text' : 'password';
+              passwordInput.type = type;
+          
+              // Toggle icon class
+              toggle.classList.toggle('fa-eye');
+              toggle.classList.toggle('fa-eye-slash');
+            });
+          </script>
+                    
+          <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-600 transition text-white py-2 rounded-lg font-semibold">
+            Create Account
+          </button>
+          <div class="text-center text-sm pt-4">
+            <a onclick="flipTo('user')" class="text-cyan-600 hover:underline cursor-pointer">Back to Login</a>
+          </div>
+        </div>
+      </form>
+
+      <!-- FORGOT PASSWORD -->
+      <div class="form-panel panel-forgot absolute inset-0 bg-white shadow-2xl rounded-2xl p-8"
+        style="transform: rotateX(180deg);">
+        <div class="flex justify-center mb-4">
+          <img src="{{asset('assets/images/logos/nan-icon.png')}}" alt="Code Logo" width="100" alt="Logo"
+            class="w-auto h-14" />
+        </div>
+        <h2 class="text-2xl font-bold text-center text-cyan-600 mb-6">Forgot Password</h2>
+        <div class="space-y-4">
+          <div class="relative">
+            <i class="fa fa-envelope absolute left-3 top-2.5 text-gray-400"></i>
+            <input type="text" placeholder="Enter your email"
+              class="pl-10 pr-3 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-400 outline-none transition-all" />
+          </div>
+          <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-600 transition text-white py-2 rounded-lg font-semibold">
+            Send Reset Link
+          </button>
+          <div class="text-center text-sm pt-4">
+            <a onclick="flipTo('user')" class="text-cyan-600 hover:underline cursor-pointer">Back to Login</a>
+          </div>
+        </div>
       </div>
+
     </div>
   </div>
+
   <script>
-    function myFunction() {
-      var x = document.querySelector(".showpass");
-      if (x.type === "password") {
-        x.type = "text";
+    const wrapper = document.getElementById('flipWrapper');
+    const panels = document.querySelectorAll('.form-panel');
+  
+    function flipTo(target) {
+      // Reset transform classes
+      wrapper.classList.remove('rotate-y', 'rotate-x-up', 'rotate-x-down');
+      panels.forEach(p => p.classList.remove('active'));
+  
+      // Set a new title based on the target panel
+      let newTitle = 'Login'; // default title
+      if (target === 'admin') {
+        wrapper.classList.add('rotate-y');
+        newTitle = 'User Login';
+      } else if (target === 'signup') {
+        wrapper.classList.add('rotate-x-up');
+        newTitle = 'Create Account';
+      } else if (target === 'forgot') {
+        wrapper.classList.add('rotate-x-down');
+        newTitle = 'Reset Password';
       } else {
-        x.type = "password";
+        newTitle = 'Admin Login';
       }
+  
+      // Update the browser tab title
+      document.title = newTitle;
+  
+      // Show the selected panel after the animation
+      setTimeout(() => {
+        if (target === 'admin') document.querySelector('.panel-admin').classList.add('active');
+        else if (target === 'signup') document.querySelector('.panel-signup').classList.add('active');
+        else if (target === 'forgot') document.querySelector('.panel-forgot').classList.add('active');
+        else document.querySelector('.panel-user').classList.add('active');
+      }, 400);
     }
+  
+    // Set the default panel to show on page load
+    document.querySelector('.panel-user').classList.add('active');
   </script>
-  <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
-  <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- solar icons -->
-  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+
+
+
 </body>
 
 </html>

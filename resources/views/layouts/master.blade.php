@@ -5,8 +5,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>@yield('title', 'Dashboard Admin')</title>
-  {{-- <link rel="shortcut icon" type="image/png" href="../assets/images/logos/pngegg.png" /> --}}
-  <link rel="shortcut icon" type="image/png" href="{{asset('assets/images/logos/logo-icon.png')}}" />
+  {{--
+  <link rel="shortcut icon" type="image/png" href="../assets/images/logos/pngegg.png" /> --}}
+  {{-- <link rel="shortcut icon" type="image/png" href="{{asset('assets/images/logos/logo-icon.png')}}" /> --}}
+  <link rel="shortcut icon" href="{{asset('assets/images/logos/nan-icon.png')}}" type="image/x-icon">
+
   <link rel="stylesheet" href="../assets/css/styles.min.css" />
   @vite('resources/css/app.css')
   <!-- Add this in your blade layout (head section) -->
@@ -17,6 +20,8 @@
   {{--
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/css/flag-icons.min.css"> --}}
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/css/flag-icons.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css" integrity="sha512-9xKTRVabjVeZmc+GUW8GgSmcREDunMM+Dt/GrzchfN8tkwHizc5RP4Ok/MXFFy5rIjJjzhndFScTceq5e6GvVQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
 </head>
@@ -55,7 +60,7 @@
       <div>
         <div class="brand-logo d-flex align-items-center justify-content-between">
           <a href="/" class="text-nowrap logo-img">
-            <img src="{{asset('assets/images/logos/logo_dash.png')}}" alt="" />
+            <img src="{{asset('assets/images/logos/Nanpos.png')}}" alt="" width="150px" height="150px"/>
           </a>
           <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
             <i class="ti ti-x fs-6"></i>
@@ -66,7 +71,7 @@
           <ul id="sidebarnav">
             <li class="nav-small-cap">
               <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-              <span class="hide-menu">Home</span>
+              <span class="hide-menu">POS</span>
             </li>
             <li class="sidebar-item">
               <a class="sidebar-link" href="/" aria-expanded="false">
@@ -81,42 +86,94 @@
             <li>
               <span class="sidebar-divider lg"></span>
             </li>
-            <li class="nav-small-cap">
-              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-              <span class="hide-menu">Apps</span>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link justify-content-between" href="/profile" aria-expanded="false">
-                <div class="d-flex align-items-center gap-3">
-                  <span class="d-flex">
-                    <i class="ti ti-user-circle"></i>
-                  </span>
-                  <span class="hide-menu">{{__('messages.user_profile')}}</span>
-                </div>
-              </a>
-            </li>
-
-
-            <li>
-              <span class="sidebar-divider lg"></span>
-            </li>
-            <li class="nav-small-cap">
-              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-              <span class="hide-menu">Pages</span>
-            </li>
-
             <li class="sidebar-item">
               <a class="sidebar-link justify-content-between" href="/users" aria-expanded="false">
                 <div class="d-flex align-items-center gap-3">
                   <span class="d-flex">
-                    <i class="ti ti-user-circle"></i>
+                    {{-- <i class="ti ti-user-circle"></i> --}}
+                    <i class="fa-solid fa-people-group"></i>
                   </span>
                   <span class="hide-menu">{{__('messages.users_list')}}</span>
                 </div>
                 {{-- <span class="hide-menu badge text-bg-secondary fs-1 py-1">Pro</span> --}}
               </a>
             </li>
+            <li>
+              <span class="sidebar-divider lg"></span>
+            </li>
             <li class="sidebar-item">
+              <a class="sidebar-link justify-content-between" href="/profile" aria-expanded="false">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="d-flex">
+                    <i class="fas fa-user-shield"></i>
+                  </span>
+                  {{-- <span class="hide-menu">{{__('messages.users_list')}}</span> --}}
+                  <span class="hide-menu">Admin</span>
+                </div>
+                {{-- <span class="hide-menu badge text-bg-secondary fs-1 py-1">Pro</span> --}}
+              </a>
+            </li>
+            <li>
+              <span class="sidebar-divider lg"></span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link justify-content-between" href="/users" aria-expanded="false">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="d-flex">
+                    <i class="fas fa-clipboard-list"></i>
+                  </span>
+                  {{-- <span class="hide-menu">{{__('messages.users_list')}}</span> --}}
+                  <span class="hide-menu">Orders</span>
+                </div>
+                {{-- <span class="hide-menu badge text-bg-secondary fs-1 py-1">Pro</span> --}}
+              </a>
+            </li>
+            <li>
+              <span class="sidebar-divider lg"></span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link justify-content-between" href="/users" aria-expanded="false">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="d-flex">
+                    <i class="fa-solid fa-table-list"></i>
+                  </span>
+                  {{-- <span class="hide-menu">{{__('messages.users_list')}}</span> --}}
+                  <span class="hide-menu">Table</span>
+                </div>
+                {{-- <span class="hide-menu badge text-bg-secondary fs-1 py-1">Pro</span> --}}
+              </a>
+            </li>
+            <li>
+              <span class="sidebar-divider lg"></span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link justify-content-between" href="/users" aria-expanded="false">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="d-flex">
+                    <i class="fas fa-box"></i>
+                  </span>
+                  {{-- <span class="hide-menu">{{__('messages.users_list')}}</span> --}}
+                  <span class="hide-menu">Menu / Products</span>
+                </div>
+                {{-- <span class="hide-menu badge text-bg-secondary fs-1 py-1">Pro</span> --}}
+              </a>
+            </li>
+            <li>
+              <span class="sidebar-divider lg"></span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link justify-content-between" href="/users" aria-expanded="false">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="d-flex">
+                    <i class="fa-solid fa-money-check-dollar"></i>
+                  </span>
+                  {{-- <span class="hide-menu">{{__('messages.users_list')}}</span> --}}
+                  <span class="hide-menu">Payments</span>
+                </div>
+                {{-- <span class="hide-menu badge text-bg-secondary fs-1 py-1">Pro</span> --}}
+              </a>
+            </li>
+            {{-- <li class="sidebar-item">
               <a class="sidebar-link justify-content-between" target="_blank"
                 href="https://bootstrapdemos.adminmart.com/modernize/dist/landingpage/index.html" aria-expanded="false">
                 <div class="d-flex align-items-center gap-3">
@@ -126,6 +183,22 @@
                   <span class="hide-menu">Landingpage</span>
                 </div>
                 <span class="hide-menu badge text-bg-secondary fs-1 py-1">Pro</span>
+              </a>
+            </li> --}}
+            <li>
+              <span class="sidebar-divider lg"></span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link justify-content-between" href="/users" aria-expanded="false">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="d-flex">
+                    <i class="fas fa-receipt"></i>
+                    {{-- <i class="fas fa-shopping-bag"></i> --}}
+                  </span>
+                  {{-- <span class="hide-menu">{{__('messages.users_list')}}</span> --}}
+                  <span class="hide-menu">Recieps</span>
+                </div>
+                {{-- <span class="hide-menu badge text-bg-secondary fs-1 py-1">Pro</span> --}}
               </a>
             </li>
             <li>
@@ -141,6 +214,60 @@
                 <span class="hide-menu">{{__('messages.add_users')}}</span>
               </a>
             </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="/form_product" aria-expanded="false">
+                <i class="ti ti-file-text"></i>
+                {{-- <span class="hide-menu">{{__('messages.add_users')}}</span> --}}
+                <span class="hide-menu">Add Product</span>
+              </a>
+            </li>
+            <li>
+              <span class="sidebar-divider lg"></span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link justify-content-between" id="logout" href="#" aria-expanded="false">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="d-flex">
+                    <i class="fa-solid fa-right-from-bracket" style="color: #f11e3d;"></i>
+                  </span>
+                  {{-- <span class="hide-menu">{{__('messages.users_list')}}</span> --}}
+                  <span class="hide-menu">Logout</span>
+                </div>
+                {{-- <span class="hide-menu badge text-bg-secondary fs-1 py-1">Pro</span> --}}
+              </a>
+            </li>
+
+            <form id="logoutForm" action="{{ url('/logout') }}" method="POST" style="display: none;">
+              @csrf
+            </form>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script>
+              document.getElementById('logout').addEventListener('click', function (e) {
+                e.preventDefault();
+                Swal.fire({
+                  title: 'Are you sure?',
+                  // title: {{__('messages.msm_logout')}},
+                  text: "Do you really want to logout?",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Yes, logout',
+                  cancelButtonText: 'Cancel'
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    document.getElementById('logoutForm').submit();
+                  }
+                });
+              });
+            </script>
+            <style>
+              .disabled {
+                color: gray;
+                cursor: not-allowed;
+                text-decoration: none;
+              }
+            </style>
             <li>
               <span class="sidebar-divider lg"></span>
             </li>
@@ -153,22 +280,22 @@
             <li>
               <span class="sidebar-divider lg"></span>
             </li>
-            <li class="nav-small-cap">
+            {{-- <li class="nav-small-cap">
               <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
               <span class="hide-menu">authentication</span>
-            </li>
+            </li> --}}
             {{-- <li class="sidebar-item">
               <a class="sidebar-link" href="/login" aria-expanded="false">
                 <i class="ti ti-login"></i>
                 <span class="hide-menu">{{__("messages.logout")}}</span>
               </a>
             </li> --}}
-            <li class="sidebar-item">
+            {{-- <li class="sidebar-item">
               <a class="sidebar-link" href="{{url('register')}}" aria-expanded="false">
                 <i class="ti ti-user-plus"></i>
                 <span class="hide-menu">{{__("messages.register")}}</span>
               </a>
-            </li>
+            </li> --}}
 
             <li>
               <span class="sidebar-divider lg"></span>
@@ -215,8 +342,6 @@
               class="navbar-nav d-flex flex-row ms-auto align-items-center justify-content-between d-sm-flex justify-content-sm-center align-items-sm-center">
               <div class="dropdown mr-2">
                 @php($lang = ["en" => "English", "khmer" => "ខ្មែរ", "ch" => "China"])
-
-
                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="languageDropdown"
                   data-bs-toggle="dropdown" aria-expanded="false">
                   <i class="fas fa-globe"></i> Language: {{$lang[Session::get('locale', 'en')]}}
@@ -245,7 +370,7 @@
               <li class="nav-item dropdow d-flex justify-content-center align-items-center">
                 <a class="nav-link" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
                   aria-expanded="false">
-                  <img src="{{ asset('uploads/' . session('avatar')) }}" alt="Avatar" width="35" height="35"
+                  <img src="{{ asset('uploads/' . session('img')) }}" alt="Avatar" width="35" height="35"
                     class="rounded-circle float-right right-4"
                     onerror="this.onerror=null; this.src='https://i.pinimg.com/736x/06/3b/bf/063bbf0665eaf9c1730bccdc5c8af1b2.jpg';" />
                 </a>
@@ -259,10 +384,10 @@
                       <i class="ti ti-mail fs-6"></i>
                       <p class="mb-0 fs-3">{{session('email')}}</p>
                     </a>
-                    <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                    {{-- <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
                       <i class="ti ti-list-check fs-6"></i>
                       <p class="mb-0 fs-3">My Task</p>
-                    </a>
+                    </a> --}}
                     {{-- <a href="/logout" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a> --}}
 
                     <a href="#" id="logoutBtn"

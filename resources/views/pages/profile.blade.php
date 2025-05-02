@@ -10,7 +10,7 @@
   </style>
   <section style="background-color: #eee;">
     <div class="container py-5">
-    <div class="row">
+    {{-- <div class="row">
       <div class="col">
       <nav aria-label="breadcrumb" class="bg-body-tertiary rounded-3 p-3 mb-4">
         <ol class="breadcrumb mb-0">
@@ -19,13 +19,13 @@
         </ol>
       </nav>
       </div>
-    </div>
+    </div> --}}
     <div class="row">
       <div class="col-lg-4">
       <div class="card mb-4">
         <div class="card-body text-center">
         @php
-        $avatarFile = session('avatar');
+        $avatarFile = session('img');
         $avatarPath = public_path('uploads/' . $avatarFile);
         $avatarUrl = ($avatarFile && file_exists($avatarPath))
         ? asset('uploads/' . $avatarFile)
@@ -39,7 +39,7 @@
         <h5 class="my-3" style="background: linear-gradient(to right, #99f239, #29d1f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold;">{{session('name')}}</h5>
         <p class="text-muted mb-1 text-center d-flex justify-content-center align-items-center "><span style="visibility: hidden;" class="text-center">1</span><span id="typewriter" class="text-center bg-primary"
           style="background: linear-gradient(to right, #ff416c, #29d1f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold;"></span></p>
-        <p class="text-muted mb-4">kampong Spue, Cambodia</p>
+        <p class="text-muted mb-4">{{session('address')}}</p>
         <div class="d-flex justify-content-center mb-2">
           <button data-mdb-button-init data-mdb-ripple-init class="btn btn-primary"><a href="https://t.me/Hoyyy_Mix_ban_Mention_Ke_jg" class="text-white">Contact Me</a></button>
           <button data-mdb-button-init data-mdb-ripple-init

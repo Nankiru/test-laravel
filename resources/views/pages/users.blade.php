@@ -1,11 +1,13 @@
 @extends('layouts/master')
 @section('title','Users List')
 @section('contents')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   @if (session('success'))
     <script>
     alert("{{ session('success') }}");
     </script>
     <style>
+      
     .error-container {
     display: flex;
     flex-direction: column;
@@ -70,7 +72,7 @@
           <td>
             <img src="{{ asset('uploads/' . $items->img) }}" 
             alt="" 
-            style="width: 80px; height: 80px;" 
+            style="width: 60px; height: 55px;" 
             class="rounded-circle" />   
           </td>
           <td>
@@ -100,13 +102,14 @@
           <td class="text-center" style="white-space: nowrap; vertical-align: center;">
             {{ \Carbon\Carbon::parse($items->dob)->format('d-M-Y') }}
           </td>          
-          <td class="d-flex justify-content-center align-items-center gap-2 mt-4">
-            <button type="button" class="btn btn-sm text-decoration-none btn-rounded btn-primary">
-              <a class="text-white" href="{{url('update_user/' .$items->id)}}">Edit</a>
+          <td class="d-flex justify-content-center align-items-center gap-1 mt-4">
+            <button type="button" class="btn btn-sm ">
+              {{-- <a class="text-white" href="{{url('update_user/' .$items->id)}}">Edit</a> --}}
+              <a class="text-white" href="{{url('update_user/' .$items->id)}}"><i class="fas fa-pen-to-square" style="color: black;font-size:16px"></i></a>
             </button>
-            <button type="button" class="btn btn-sm text-decoration-none btn-rounded btn-danger">
+            <button type="button" class="btn btn-sm">
               <a class="text-white" href="{{url('/delete', $items->id)}}"
-                 onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
+                 onclick="return confirm('Are you sure you want to delete this user?')"><i class="fa-regular fa-trash-can" style="color: #e6002e;font-size:16px"></i></a>
             </button>
           </td>
         </tr>

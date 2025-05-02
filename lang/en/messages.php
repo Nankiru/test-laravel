@@ -4,7 +4,7 @@ return [
     "user_profile" => "User Profile",
     "logout" => "Logout",
     "msm_logout" => "Are you sure?",
-    "users_list" => "Users List",
+    "users_list" => "Customers",
     "add_users" => "Add User",
     "name_email" => "Name/Email",
     "position" => "Position",
