@@ -109,7 +109,7 @@
             </span>
           </div>
           <h6 class="text-muted mb-2">Total Sales</h6>
-          <h4 class="mb-3">$24,589</h4>
+          <h4 class="mb-3">$999,999,999</h4>
           <div class="progress">
             <div class="progress-bar active-purple" id="progressBarBlue">
             </div>
@@ -199,8 +199,8 @@
             <i class="fas fa-arrow-up me-1"></i>15.7%
             </span>
           </div>
-          <h6 class="text-muted mb-2">Revenue</h6>
-          <h4 class="mb-3">$45,289</h4>
+          <h6 class="text-muted mb-2">Products</h6>
+          <h4 class="mb-3">{{$products}}</h4>
           <div class="progress">
             <div class="progress-bar active-blue"></div>
           </div>
@@ -244,7 +244,7 @@
         height: 100%;
         background: linear-gradient(90deg, #0550f3, #87a6f4);
         background-size: 200% 100%;
-        animation: shimmer 2s infinite linear, growProgress 2s forwards;
+        animation: shimmer 5s infinite linear, active-blue 5s forwards;
         border-radius: 10px;
         }
 
@@ -267,13 +267,22 @@
           width: {{$percentage}}%;
         }
         }
+        @keyframes active-blue {
+        from {
+          width: 0%;
+        }
+
+        to {
+          width: {{$products}}%;
+        }
+        }
         @keyframes growProgress {
         from {
           width: 0%;
         }
 
         to {
-          width: 50%;
+          width: 95%;
         }
         }
       </style>
@@ -370,8 +379,8 @@
         </div>
       </div>
       </div>
-      {{-- Card' --}}
-      <div class="row">
+      {{-- Card'
+      {{-- <div class="row">
       @foreach ($users as $user)
       @if ($user->name != 'Laravel 12')
       <div class="col-sm-6 col-xl-3">
@@ -380,8 +389,8 @@
         <div class="card-body text-center">
         <img src="{{ asset('uploads/' . $user->img) }}" alt="User Profile"
         class="rounded-circle profile-img mb-3" style="width: 100px; height: 100px; object-fit: cover;">
-        <h3 class="card-title mb-2">John Doe</h3>
-        <p class="card-text text-muted mb-3">Web Developer</p>
+        <h3 class="card-title mb-2" style="white-space: nowrap;">{{$user->name}}</h3>
+        <p class="card-text text-muted mb-3">{{$user->position}}</p>
         <div class="social-icons mb-4">
         <a href="#" class="me-2"><i class="bi bi-facebook"></i></a>
         <a href="#"><i class="bi bi-instagram"></i></a>
@@ -392,7 +401,7 @@
       </div>
       @endif
     @endforeach
-      </div>
+      </div> --}} --}}
 
 
 

@@ -7,7 +7,8 @@
   <title>@yield('title', 'Dashboard Admin')</title>
   {{--
   <link rel="shortcut icon" type="image/png" href="../assets/images/logos/pngegg.png" /> --}}
-  {{-- <link rel="shortcut icon" type="image/png" href="{{asset('assets/images/logos/logo-icon.png')}}" /> --}}
+  {{--
+  <link rel="shortcut icon" type="image/png" href="{{asset('assets/images/logos/logo-icon.png')}}" /> --}}
   <link rel="shortcut icon" href="{{asset('assets/images/logos/nan-icon.png')}}" type="image/x-icon">
 
   <link rel="stylesheet" href="../assets/css/styles.min.css" />
@@ -15,13 +16,29 @@
   <!-- Add this in your blade layout (head section) -->
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.6/lottie.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  {{--
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> --}}
+
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   {{--
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/css/flag-icons.min.css"> --}}
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/css/flag-icons.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css" integrity="sha512-9xKTRVabjVeZmc+GUW8GgSmcREDunMM+Dt/GrzchfN8tkwHizc5RP4Ok/MXFFy5rIjJjzhndFScTceq5e6GvVQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css"
+    integrity="sha512-9xKTRVabjVeZmc+GUW8GgSmcREDunMM+Dt/GrzchfN8tkwHizc5RP4Ok/MXFFy5rIjJjzhndFScTceq5e6GvVQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Add to <head> if not already included -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Add this in the <head> or before the closing </body> -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+
 
 
 </head>
@@ -38,9 +55,21 @@
     background-color: rgba(255, 255, 255, 0.5);
     /* optional: semi-transparent bg */
   }
+
+  .transition-max-height {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .transition-max-height.open {
+    max-height: 500px;
+    /* big enough to fit contents */
+  }
 </style>
 
-<body class="">
+
+<body>
   @if (session('success'))
     <script>
     Swal.fire({
@@ -48,6 +77,17 @@
       text: "{{ session('success') }}",
       icon: 'success',
       confirmButtonText: 'OK'
+    });
+    </script>
+  @endif
+
+  @if (session('status'))
+    <script>
+    Swal.fire({
+      title: 'Login Failed',
+      text: "{{ session('status') }}",
+      icon: 'error',
+      confirmButtonText: 'Try Again'
     });
     </script>
   @endif
@@ -60,7 +100,7 @@
       <div>
         <div class="brand-logo d-flex align-items-center justify-content-between">
           <a href="/" class="text-nowrap logo-img">
-            <img src="{{asset('assets/images/logos/Nanpos.png')}}" alt="" width="150px" height="150px"/>
+            <img src="{{asset('assets/images/logos/Nanpos.png')}}" alt="" width="150px" height="150px" />
           </a>
           <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
             <i class="ti ti-x fs-6"></i>
@@ -102,6 +142,21 @@
               <span class="sidebar-divider lg"></span>
             </li>
             <li class="sidebar-item">
+              <a class="sidebar-link justify-content-between" href="{{url('product')}}" aria-expanded="false">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="d-flex">
+                    {{-- <i class="ti ti-user-circle"></i> --}}
+                    <i class="fa-solid fa-box"></i>
+                  </span>
+                  <span class="hide-menu">Products</span>
+                </div>
+                {{-- <span class="hide-menu badge text-bg-secondary fs-1 py-1">Pro</span> --}}
+              </a>
+            </li>
+            <li>
+              <span class="sidebar-divider lg"></span>
+            </li>
+            <li class="sidebar-item">
               <a class="sidebar-link justify-content-between" href="/profile" aria-expanded="false">
                 <div class="d-flex align-items-center gap-3">
                   <span class="d-flex">
@@ -128,21 +183,55 @@
                 {{-- <span class="hide-menu badge text-bg-secondary fs-1 py-1">Pro</span> --}}
               </a>
             </li>
-            <li>
+            {{-- <li>
               <span class="sidebar-divider lg"></span>
             </li>
             <li class="sidebar-item">
               <a class="sidebar-link justify-content-between" href="/users" aria-expanded="false">
                 <div class="d-flex align-items-center gap-3">
                   <span class="d-flex">
+                    <box-icon name='category' class=""></box-icon>
+                  </span>
+                  <span class="hide-menu">Categories</span>
+                </div>
+              </a>
+            </li> --}}
+            <li class="sidebar-item has-submenu">
+              <a class="sidebar-link justify-content-between" href="javascript:void(0);" aria-expanded="false">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="d-flex">
                     <i class="fa-solid fa-table-list"></i>
                   </span>
-                  {{-- <span class="hide-menu">{{__('messages.users_list')}}</span> --}}
                   <span class="hide-menu">Table</span>
+                  <i class="fa fa-chevron-down ms-auto float-right w-full"></i>
                 </div>
-                {{-- <span class="hide-menu badge text-bg-secondary fs-1 py-1">Pro</span> --}}
               </a>
+
+              <ul class="submenu transition-max-height ms-4">
+                <li class="sidebar-item">
+                  <a class="sidebar-link justify-content-between" href="/users" aria-expanded="false">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="d-flex">
+                        <i class="fa-solid fa-table-list"></i>
+                      </span>
+                      <span class="hide-menu">user</span>
+                    </div>
+                  </a>
+                </li>
+                <li class="sidebar-item">
+                  <a class="sidebar-link justify-content-between" href="/users" aria-expanded="false">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="d-flex">
+                        <i class="fa-solid fa-table-list"></i>
+                      </span>
+                      <span class="hide-menu">product</span>
+                    </div>
+                  </a>
+                </li>
+              </ul>
             </li>
+
+
             <li>
               <span class="sidebar-divider lg"></span>
             </li>
@@ -162,18 +251,18 @@
               <span class="sidebar-divider lg"></span>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link justify-content-between" href="/users" aria-expanded="false">
+              <a class="sidebar-link justify-content-between" href="{{url('add-brand')}}" aria-expanded="false">
                 <div class="d-flex align-items-center gap-3">
                   <span class="d-flex">
                     <i class="fa-solid fa-money-check-dollar"></i>
                   </span>
                   {{-- <span class="hide-menu">{{__('messages.users_list')}}</span> --}}
-                  <span class="hide-menu">Payments</span>
+                  <span class="hide-menu">Brand</span>
                 </div>
                 {{-- <span class="hide-menu badge text-bg-secondary fs-1 py-1">Pro</span> --}}
               </a>
             </li>
-            {{-- <li class="sidebar-item">
+            <li class="sidebar-item">
               <a class="sidebar-link justify-content-between" target="_blank"
                 href="https://bootstrapdemos.adminmart.com/modernize/dist/landingpage/index.html" aria-expanded="false">
                 <div class="d-flex align-items-center gap-3">
@@ -184,7 +273,7 @@
                 </div>
                 <span class="hide-menu badge text-bg-secondary fs-1 py-1">Pro</span>
               </a>
-            </li> --}}
+            </li>
             <li>
               <span class="sidebar-divider lg"></span>
             </li>
@@ -204,9 +293,25 @@
             <li>
               <span class="sidebar-divider lg"></span>
             </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link justify-content-between" href="{{url('index')}}" aria-expanded="false">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="d-flex">
+                    <i class="fa-solid fa-earth-europe"></i>
+                    {{-- <i class="fas fa-shopping-bag"></i> --}}
+                  </span>
+                  {{-- <span class="hide-menu">{{__('messages.users_list')}}</span> --}}
+                  <span class="hide-menu">My Website</span>
+                </div>
+                {{-- <span class="hide-menu badge text-bg-secondary fs-1 py-1">Pro</span> --}}
+              </a>
+            </li>
+            <li>
+              <span class="sidebar-divider lg"></span>
+            </li>
             <li class="nav-small-cap">
               <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-              <span class="hide-menu">FORM</span>
+              <span class="hide-menu">Insert</span>
             </li>
             <li class="sidebar-item">
               <a class="sidebar-link" href="/form" aria-expanded="false">
@@ -310,7 +415,7 @@
     <!--  Main wrapper -->
     <div class="body-wrapper">
       <!--  Header Start -->
-      <header class="sticky-top z-10 bg-body bg-opacity-50 backdrop-blur ">
+      <header class="sticky-top z-10 bg-body bg-opacity-50 backdrop-blur">
         <nav class="navbar navbar-expand-lg top-0 relative">
           <ul class="navbar-nav">
             <li class="nav-item d-block d-start-10 d-lg-none position-absolute start-0 top-50 translate-middle-y ps-3">
@@ -318,8 +423,7 @@
                 <i class="ti ti-menu-2"></i>
               </a>
             </li>
-
-            <li class="nav-item dropdown">
+            {{-- <li class="nav-item dropdown">
               <div class="dropdown-menu dropdown-menu-animate-up" aria-labelledby="drop1">
                 <div class="message-body">
                   <a href="javascript:void(0)" class="dropdown-item">
@@ -330,14 +434,13 @@
                   </a>
                 </div>
               </div>
-            </li>
+            </li> --}}
           </ul>
           <div class="d-flex align-items-center navbar-collapse justify-content-center px-0" id="navbarNav">
 
             {{-- Selecting Languages --}}
 
             <!-- Language Dropdown -->
-
             <ul
               class="navbar-nav d-flex flex-row ms-auto align-items-center justify-content-between d-sm-flex justify-content-sm-center align-items-sm-center">
               <div class="dropdown mr-2">
@@ -429,15 +532,35 @@
       @yield('contents')
     </div>
   </div>
-  <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
-  <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../assets/js/sidebarmenu.js"></script>
-  <script src="../assets/js/app.min.js"></script>
-  <script src="../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
-  <script src="../assets/libs/simplebar/dist/simplebar.js"></script>
-  <script src="../assets/js/dashboard.js"></script>
-  <!-- solar icons -->
-  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
 </body>
+<script src="../assets/libs/jquery/dist/jquery.min.js"></script>
+<script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/sidebarmenu.js"></script>
+<script src="../assets/js/app.min.js"></script>
+<script src="../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
+<script src="../assets/libs/simplebar/dist/simplebar.js"></script>
+<script src="../assets/js/dashboard.js"></script>
+<!-- solar icons -->
+<script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const toggles = document.querySelectorAll('.has-submenu > a');
+
+    toggles.forEach(toggle => {
+      toggle.addEventListener('click', function () {
+        const submenu = this.parentElement.querySelector('.submenu');
+        submenu.classList.toggle('open');
+      });
+    });
+  });
+</script>
+
+<script>
+  const toggleBtn = document.getElementById('toggleNightMode');
+
+  toggleBtn.addEventListener('click', () => {
+    document.body.classList.toggle('night-mode');
+  });
+</script>
 
 </html>

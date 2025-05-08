@@ -5,10 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Login;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
+
+
+    protected function redirectTo(){
+        if(Auth::user()->role == 'admin'){
+            return redirect('/')->with('success','You are Admin');
+        }else{
+            return redirect('index')->with('success','Hello babee😘');
+        }
+    }
     public function login()
     {
         return view('auth.login');
@@ -24,6 +34,17 @@ class LoginController extends Controller
         // }
         $users = User::where('status', 1)->get();
         return view('customerpage.home', compact('users'));
+    }
+    public function index()
+    {
+        // if (!session()->has('id')) {
+        //     return redirect('/login')->with('error', 'Please login first.');
+        // }
+        $users = User::where('status', 1)->paginate(8);
+        $newusers = User::where('status',1)->whereDate('created_at', \Carbon\Carbon::today())->paginate(8);
+        // $users = User::whereDate('created_at', \Carbon\Carbon::today())->get();
+
+        return view('customerpage.index', compact('users','newusers'));
     }
     public function admin_register(Request $request)
     {
@@ -46,10 +67,9 @@ class LoginController extends Controller
         $register->created_at = now();
         $register->updated_at = now();
         $register->save();
-        
+
         $request->session()->flash('success', 'Admin registered successfully');
         return redirect('/login');
-        
     }
     public function admin_submit(Request $request)
     {
@@ -65,6 +85,7 @@ class LoginController extends Controller
                 'telegram' => $admin->telegram,
                 'address' => $admin->address,
                 'img' => $admin->img,
+                'role' => $admin->role,
             ]);
             $request->session()->flash('success', 'Welcome back, ' . $admin->name . '!');
             return redirect('/');
@@ -75,36 +96,41 @@ class LoginController extends Controller
         }
     }
     public function user_login(Request $request)
-    {
-        // Validate request
-        $request->validate([
-            'email' => 'required|email',
-            'name' => 'required',
+{
+    // Validate request
+    $request->validate([
+        'email' => 'required|email',
+        'username' => 'required',
+    ]);
+
+    // Attempt to find user
+    $user = User::where('email', $request->email)
+        ->where('name', $request->username)
+        ->first();
+
+    // Check if user exists
+    if ($user) {
+        // Store user info in session
+        // $request->session()->put([
+        //     'id' => $user->id,
+        //     'name' => $user->name,
+        //     'img' => $user->img,
+        //     'role' => $user->role,
+        // ]);
+        session([
+            'id' => $user->id,
+            'name_user' => $user->name,
+            'img' => $user->img,
+            'role' => $user->role,
         ]);
 
-        // Attempt to find user
-        $user = User::where('email', $request->email)
-            ->where('name', $request->name)
-            ->first();
+        return redirect('/index')->with('success', 'Welcome back, ' . $user->name . '!');
 
-        // Check if user exists and password matches
-        if ($user) {
-            // Store user info in session
-            $request->session()->put([
-                'id' => $user->id,
-                'name' => $user->name,
-                // 'email' => $user->email,
-                // 'phone' => $user->phone,
-                // 'telegram' => $user->telegram,
-                // 'address' => $user->address,
-                // 'avatar' => $user->avatar,
-            ]);
-
-            return redirect('/')->with('success', 'Welcome back, ' . $user->name . '!');
-        } else {
-            return redirect('/login')->with('error', 'Invalid credentials');
-        }
+    } else {
+        return redirect('/signin')->with('error', 'Invalid credentials');
     }
+}
+
 
     // Logout user
 
@@ -142,6 +168,22 @@ class LoginController extends Controller
     {
         $request->session()->flush(); // clears all session data
         return redirect('/login');
+    }
+    public function forgot_password(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:admins,email',
+            'newpass' => 'required',
+            'cfpass' => 'required|same:newpass'
+        ]);
+
+        $user = Login::where('email', $request->email)->first();
+
+        // Set the new password
+        $user->password = bcrypt($request->newpass);
+        $user->save();
+
+        return back()->with('status', 'Password successfully reset!');
     }
     public function user_logout(Request $request)
     {

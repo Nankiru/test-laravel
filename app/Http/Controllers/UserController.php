@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Login;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -15,9 +16,10 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::where('status',1)->get();
-        $counts = User::where('status',1)->count();
-        return view('index',compact('users','counts'));
+        $users = User::where('status', 1)->get();
+        $counts = User::where('status', 1)->count();
+        $products = Product::where('status', 1)->count();
+        return view('index', compact('users', 'counts','products'));
     }
 
     public function profileAdmin()
@@ -32,6 +34,40 @@ class UserController extends Controller
     {
         return view('/pages/form_product');
     }
+    public function search(Request $request)
+    {
+        // Retrieve the search term from input
+        $search = $request->input('search');
+        
+        // Build the query and paginate results
+        $users = User::where('name', 'like', "%{$search}%")
+                     ->paginate(5)                   // paginate instead of get
+                     ->appends(['search' => $search]); // preserve query string
+        
+        // Return the view with paginated users and the original search term
+        return view('pages.users', [
+            'users'  => $users,
+            'search' => $search,
+        ]);
+    }
+    public function search_index(Request $request)
+    {
+        // Retrieve the search term from input
+        $search = $request->input('search');
+        
+        // Build the query and paginate results
+        $users = User::where('name', 'like', "%{$search}%")
+                     ->paginate(8)                   // paginate instead of get
+                     ->appends(['search' => $search]); // preserve query string
+        
+        // Return the view with paginated users and the original search term
+        return view('customerpage.index', [
+            'users'  => $users,
+            'search' => $search,
+        ]);
+    }
+    
+
     public function formSubmit(Request $request)
     {
         $users = new User();
@@ -54,68 +90,81 @@ class UserController extends Controller
         // return redirect()->back();
         return redirect('/');
     }
-    public function userList()
+    public function userList(Request $request)
     {
-        $users = User::where('status', 1)->orderBy('created_at', 'DESC')->get();
-        return view('/pages/users', compact('users'));
+        $query = User::where('status', 1);
+
+        // If there is a search term, apply the filter
+        if ($request->has('search') && $request->search != '') {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+    
+        // Use paginate() instead of get() to return a paginator
+        $users = $query->orderBy('created_at', 'DESC')->paginate(5);
+    
+        // Make sure to keep the search term in the pagination links
+        $users->appends($request->all());
+    
+        return view('pages/users', compact('users'));
     }
 
     // Handle login form submit
 
-    public function update($id){
-            $result = User::where('id',$id)->first();
-            return view('pages/update_user',compact('result'));
+    public function update($id)
+    {
+        $result = User::where('id', $id)->first();
+        return view('pages/update_user', compact('result'));
     }
     public function update_submit($id, Request $request)
-{
-    // $request->validate([
-    //     'name' => 'required|string|max:255',
-    //     'email' => 'required|email',
-    //     'position' => 'nullable|string|max:255',
-    //     'salary' => 'nullable|numeric',
-    //     'province' => 'nullable|string|max:255',
-    //     'country' => 'nullable|string|max:255',
-    //     'date' => 'nullable|date',
-    //     'file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
-    // ]);
+    {
+        // $request->validate([
+        //     'name' => 'required|string|max:255',
+        //     'email' => 'required|email',
+        //     'position' => 'nullable|string|max:255',
+        //     'salary' => 'nullable|numeric',
+        //     'province' => 'nullable|string|max:255',
+        //     'country' => 'nullable|string|max:255',
+        //     'date' => 'nullable|date',
+        //     'file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        // ]);
 
-    $user = User::find($id);
+        $user = User::find($id);
 
-    if (!$user) {
-        return back()->with('error', 'User not found.');
-    }
+        if (!$user) {
+            return back()->with('error', 'User not found.');
+        }
 
-    // Update basic fields
-    $user->name = $request->name;
-    $user->email = $request->email;
-    $user->position = $request->position;
-    $user->salary = $request->salary;
-    $user->province = $request->province;
-    $user->country = $request->country;
-    $user->dob = $request->date;
+        // Update basic fields
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->position = $request->position;
+        $user->salary = $request->salary;
+        $user->province = $request->province;
+        $user->country = $request->country;
+        $user->dob = $request->date;
 
         if ($user->img && file_exists(public_path('uploads/' . $user->img)))
             unlink(public_path('uploads/' . $user->img));
-    
+
         // Store new image
         $imageName = $request->file('file')->getClientOriginalName();
         $request->file('file')->move(public_path('uploads/'), $imageName);
-    
+
         $user->img = $imageName;
         // dd($user->img = $imageName);
-    
+
         // Update session if necessary
         if (session('id') == $id) {
             session(['img' => $imageName]);
         }
 
-    $user->updated_at = now();
-    $user->save();
+        $user->updated_at = now();
+        $user->save();
 
-    return redirect('/')->with('success', 'User updated successfully!');
-}
+        return redirect('/')->with('success', 'User updated successfully!');
+    }
 
-    
+
 
     public function destroy($id)
     {
@@ -132,22 +181,22 @@ class UserController extends Controller
         // $request->validate([
         //     'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
         // ]);
-    
+
         $user = Login::find($id);
-    
+
         if ($user) {
             // Delete old image if exists
             if ($user->img && file_exists(public_path('uploads/admin/' . $user->img))) {
                 unlink(public_path('uploads/admin/' . $user->img));
             }
-    
+
             // Store new image
             // $imageName = time() . '.' . $request->img->extension();
             // $request->img->move(public_path('uploads'), $imageName);
 
             $imageName = $request->file('img')->getClientOriginalName();
             $request->file('img')->move(public_path('uploads/admin/'), $imageName);
-    
+
             // Update user image and status
 
             // dd( $user->img = $imageName);
@@ -155,14 +204,14 @@ class UserController extends Controller
             $user->save();
 
             session(['img' => $imageName]);
-    
+
             return redirect()->back()->with('success', 'Profile image updated successfully');
         }
-    
+
         return redirect('/profile')->with('error', 'User not found');
     }
-    
 
-
-
+    public function user_signin(){
+        return view('auth.userslogin');
+    }
 }
