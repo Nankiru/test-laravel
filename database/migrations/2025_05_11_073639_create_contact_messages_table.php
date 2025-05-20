@@ -18,7 +18,7 @@ Schema::create('contact_messages', function (Blueprint $table) {
     $table->string('subject')->nullable();
     $table->string('address');
     $table->text('message');
-    $table->string('phone')->nullable();
+    $table->integer('phone')->nullable();
     $table->timestamps();
 });
 

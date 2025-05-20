@@ -15,33 +15,28 @@ return new class extends Migration
             $table->id();
 
             $table->string('name');
-            $table->string('slug')->unique();
+            $table->string('category')->nullable();
+            $table->string('brand')->nullable();
             $table->text('description')->nullable();
 
             $table->decimal('price', 10, 2);
             $table->decimal('discount_price', 10, 2)->nullable();
 
             $table->integer('stock')->default(0);
-            $table->string('sku')->unique()->nullable();
 
-            $table->unsignedBigInteger('category_id')->nullable();
-            $table->unsignedBigInteger('brand_id')->nullable();
 
+            $table->string('storage')->nullable(); // main product image
+            $table->string('ram')->nullable(); // main product image
+            $table->string('screen_size')->nullable(); // main product image
+            $table->string('cpu')->nullable(); // main product image
+            $table->string('os')->nullable(); // main product image
             $table->string('image')->nullable(); // main product image
-            $table->json('gallery_images')->nullable(); // additional images
-
-            $table->json('attributes')->nullable(); // size, color, etc.
+            $table->string('img1')->nullable(); // main product image
+            $table->string('img2')->nullable(); // main product image
+            $table->string('img3')->nullable(); // main product image
             $table->string('tags')->nullable(); // comma-separated tags
-
-            $table->decimal('weight', 8, 2)->nullable();
-            $table->string('dimensions')->nullable(); // optional dimension info
-
             $table->boolean('featured')->default(false);
             $table->boolean('status')->default(true); // active/inactive
-
-            $table->unsignedBigInteger('vendor_id')->nullable(); // for multi-vendor apps
-
-            $table->integer('view_count')->default(0);
 
             $table->timestamps();
 
