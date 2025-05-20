@@ -55,66 +55,58 @@ class ProductController extends Controller
 
 public function addProduct(Request $request)
 {
-    $products = new Product();
+    // Validate required fields (optional but recommended)
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'image' => 'required|image',
+        'img1' => 'nullable|image',
+        'img2' => 'nullable|image',
+        'img3' => 'nullable|image',
+        // Add validation for other fields as needed
+    ]);
 
-    $products->name = $request->name;
-    $products->description = $request->description;
-    $products->price = $request->price;
-    $products->discount_price = $request->discount_price;
-    $products->storage = $request->storage;
-    $products->ram = $request->ram;
-    $products->screen_size = $request->screen_size;
-    $products->cpu = $request->cpu;
-    $products->os = $request->os;
-    $products->tags = $request->tags;
-    $products->stock = $request->stock;
-    $products->category = $request->category;
-    $products->brand = $request->brand;
-    $products->status = 1;
+    $product = new Product();
+
+    $product->name = $request->name;
+    $product->description = $request->description;
+    $product->price = $request->price;
+    $product->discount_price = $request->discount_price;
+    $product->storage = $request->storage;
+    $product->ram = $request->ram;
+    $product->screen_size = $request->screen_size;
+    $product->cpu = $request->cpu;
+    $product->os = $request->os;
+    $product->tags = $request->tags;
+    $product->stock = $request->stock;
+    $product->category = $request->category;
+    $product->brand = $request->brand;
+    $product->status = 1;
 
     // ✅ Upload main image to Cloudinary
     if ($request->hasFile('image')) {
-        $uploadedImageUrl = Cloudinary::upload(
+        $mainImageUrl = Cloudinary::upload(
             $request->file('image')->getRealPath(),
             ['folder' => 'products/mainimages']
         )->getSecurePath();
-        $products->image = $uploadedImageUrl;
+        $product->image = $mainImageUrl;
     }
 
     // ✅ Upload gallery images to Cloudinary
-    if ($request->hasFile('img1')) {
-        $img1Url = Cloudinary::upload(
-            $request->file('img1')->getRealPath(),
-            ['folder' => 'products/galleries']
-        )->getSecurePath();
-        $products->img1 = $img1Url;
+    foreach (['img1', 'img2', 'img3'] as $key) {
+        if ($request->hasFile($key)) {
+            $url = Cloudinary::upload(
+                $request->file($key)->getRealPath(),
+                ['folder' => 'products/galleries']
+            )->getSecurePath();
+            $product->$key = $url;
+        }
     }
 
-    if ($request->hasFile('img2')) {
-        $img2Url = Cloudinary::upload(
-            $request->file('img2')->getRealPath(),
-            ['folder' => 'products/galleries']
-        )->getSecurePath();
-        $products->img2 = $img2Url;
-    }
+    $product->created_at = now();
+    $product->updated_at = now();
+    $product->save();
 
-    if ($request->hasFile('img3')) {
-        $img3Url = Cloudinary::upload(
-            $request->file('img3')->getRealPath(),
-            ['folder' => 'products/galleries']
-        )->getSecurePath();
-        $products->img3 = $img3Url;
-    }
-
-    $products->created_at = now();
-    $products->updated_at = now();
-    $products->save();
-
-    if ($products) {
-        return redirect('/dashboard')->with('success', 'Product ' . $products->name . ' added successfully!');
-    } else {
-        return redirect('/form_product')->with('error', 'Failed to add product.');
-    }
+    return redirect('/dashboard')->with('success', 'Product ' . $product->name . ' added successfully!');
 }
 
 
