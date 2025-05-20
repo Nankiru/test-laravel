@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Product;
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class ProductController extends Controller
 {
@@ -51,53 +52,71 @@ class ProductController extends Controller
         $tablets = Product::where('category', 'Tablet')->orderBy('id', 'DESC')->paginate(8);
         return view('customerpage/index', compact('products', 'new_products', 'laptops', 'tablets', 'smartphones'));
     }
-    public function addProduct(Request $request)
-    {
-        $products = new Product();
-        $products->name = $request->name;
-        $products->description = $request->description;
-        $products->price = $request->price;
-        $products->discount_price = $request->discount_price;
-        $products->storage = $request->storage;
-        $products->ram = $request->ram;
-        $products->screen_size = $request->screen_size;
-        $products->cpu = $request->cpu;
-        $products->os = $request->os;
-        $products->ram = $request->ram;
-        $products->tags = $request->tags;
-        $products->stock = $request->stock;
-        $products->category = $request->category;
-        $products->brand = $request->brand;
-        $products->status = 1;
-        $image = $request->file('image')->getClientOriginalName();
-        $request->file('image')->move(public_path('uploads/products/galaries/'), $image);
-        $products->image = $image;
 
-        $img1 = $request->file('img1')->getClientOriginalName();
-        $request->file('img1')->move(public_path('uploads/products/mainimages/'), $img1);
-        $products->img1 = $img1;
+public function addProduct(Request $request)
+{
+    $products = new Product();
 
-        $img2 = $request->file('img2')->getClientOriginalName();
-        $request->file('img2')->move(public_path('uploads/products/mainimages/'), $img2);
-        $products->img2 = $img2;
+    $products->name = $request->name;
+    $products->description = $request->description;
+    $products->price = $request->price;
+    $products->discount_price = $request->discount_price;
+    $products->storage = $request->storage;
+    $products->ram = $request->ram;
+    $products->screen_size = $request->screen_size;
+    $products->cpu = $request->cpu;
+    $products->os = $request->os;
+    $products->tags = $request->tags;
+    $products->stock = $request->stock;
+    $products->category = $request->category;
+    $products->brand = $request->brand;
+    $products->status = 1;
 
-        $img3 = $request->file(key: 'img3')->getClientOriginalName();
-        $request->file('img3')->move(public_path('uploads/products/mainimages/'), $img3);
-        $products->img3 = $img3;
-
-
-
-
-        $products->created_at = now();
-        $products->updated_at = now();
-
-        $products->save();
-        if ($products) {
-            return redirect('/dashboard')->with('success', 'Product ' . $products->name . ' add Successfully!');
-        } else {
-            return redirect('/form_product')->with('error', 'Product ' . $products->name . " don't add Successfully!");
-        }
+    // ✅ Upload main image to Cloudinary
+    if ($request->hasFile('image')) {
+        $uploadedImageUrl = Cloudinary::upload(
+            $request->file('image')->getRealPath(),
+            ['folder' => 'products/mainimages']
+        )->getSecurePath();
+        $products->image = $uploadedImageUrl;
     }
+
+    // ✅ Upload gallery images to Cloudinary
+    if ($request->hasFile('img1')) {
+        $img1Url = Cloudinary::upload(
+            $request->file('img1')->getRealPath(),
+            ['folder' => 'products/galleries']
+        )->getSecurePath();
+        $products->img1 = $img1Url;
+    }
+
+    if ($request->hasFile('img2')) {
+        $img2Url = Cloudinary::upload(
+            $request->file('img2')->getRealPath(),
+            ['folder' => 'products/galleries']
+        )->getSecurePath();
+        $products->img2 = $img2Url;
+    }
+
+    if ($request->hasFile('img3')) {
+        $img3Url = Cloudinary::upload(
+            $request->file('img3')->getRealPath(),
+            ['folder' => 'products/galleries']
+        )->getSecurePath();
+        $products->img3 = $img3Url;
+    }
+
+    $products->created_at = now();
+    $products->updated_at = now();
+    $products->save();
+
+    if ($products) {
+        return redirect('/dashboard')->with('success', 'Product ' . $products->name . ' added successfully!');
+    } else {
+        return redirect('/form_product')->with('error', 'Failed to add product.');
+    }
+}
+
 
 
     public function search(Request $request)
