@@ -25,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
         // $this->loadTranslationsFrom(resource_path('lang/frontend'), 'frontend');
         // \Illuminate\Support\Facades\App::setLocale('km');
 
+        URL::forceHttps();
         Paginator::useBootstrap();
         if (config('app.env') !== 'local') {
             URL::forceScheme('https');
