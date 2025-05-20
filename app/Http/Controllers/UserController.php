@@ -8,18 +8,70 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     // Show login page
 
+    public function Register(Request $request)
+    {
+        return view('auth.users_register');
+    }
+    public function register_submit(Request $request)
+    {
+        // $request->validate([
+        //     'fullname' => 'required|string|max:255',
+        //     'email' => 'required|email|unique:users,email',
+        //     'pass' => 'required|min:6|confirmed',
+        // ]);
+
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = $request->pass;
+        $user->gender = $request->gender;
+        // dd($user->gender);
+        $user->created_at = now();
+        $user->updated_at = now();
+        $user->save();
+
+        return redirect('/signin')->with('success', 'Account created successfully!');
+    }
+    public function signin_submit(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'pass' => 'required|string',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if ($user && Hash::check($request->pass, $user->password)) {
+            Auth::login($user);
+            $request->session()->regenerate();
+
+            $name = Auth::user()->name;
+            $email = Auth::user()->email;
+            return redirect('/')->with('success', 'Login successfully!');
+        }
+
+        return back()->with('error', 'Incorrect Email or Password')->withInput();
+    }
+
+
+    public function SignIN()
+    {
+        return view('auth.userlogin');
+    }
 
     public function index()
     {
         $users = User::where('status', 1)->get();
         $counts = User::where('status', 1)->count();
         $products = Product::where('status', 1)->count();
-        return view('index', compact('users', 'counts','products'));
+        $allproduct = Product::where('status', 1)->get();
+        return view('index', compact('users', 'counts', 'products', 'allproduct'));
     }
 
     public function profileAdmin()
@@ -38,12 +90,12 @@ class UserController extends Controller
     {
         // Retrieve the search term from input
         $search = $request->input('search');
-        
+
         // Build the query and paginate results
         $users = User::where('name', 'like', "%{$search}%")
-                     ->paginate(5)                   // paginate instead of get
-                     ->appends(['search' => $search]); // preserve query string
-        
+            ->paginate(5)                   // paginate instead of get
+            ->appends(['search' => $search]); // preserve query string
+
         // Return the view with paginated users and the original search term
         return view('pages.users', [
             'users'  => $users,
@@ -54,19 +106,19 @@ class UserController extends Controller
     {
         // Retrieve the search term from input
         $search = $request->input('search');
-        
+
         // Build the query and paginate results
         $users = User::where('name', 'like', "%{$search}%")
-                     ->paginate(8)                   // paginate instead of get
-                     ->appends(['search' => $search]); // preserve query string
-        
+            ->paginate(8)                   // paginate instead of get
+            ->appends(['search' => $search]); // preserve query string
+
         // Return the view with paginated users and the original search term
         return view('customerpage.index', [
             'users'  => $users,
             'search' => $search,
         ]);
     }
-    
+
 
     public function formSubmit(Request $request)
     {
@@ -81,14 +133,14 @@ class UserController extends Controller
         $users->country = $request->country;
         $users->status = 1;
         $fileName = $request->file('file')->getClientOriginalName();
-        $request->file('file')->move(public_path('uploads/'), $fileName);
+        $request->file('file')->move(public_path('uploads/users/'), $fileName);
         $users->img = $fileName;
         $users->created_at = now();
         $users->save();
         $users->orderBy('id', 'DESC')->get();
         session()->flash('success', 'User added successfully!');
         // return redirect()->back();
-        return redirect('/');
+        return redirect('/dashboard');
     }
     public function userList(Request $request)
     {
@@ -98,13 +150,13 @@ class UserController extends Controller
         if ($request->has('search') && $request->search != '') {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
-    
+
         // Use paginate() instead of get() to return a paginator
         $users = $query->orderBy('created_at', 'DESC')->paginate(5);
-    
+
         // Make sure to keep the search term in the pagination links
         $users->appends($request->all());
-    
+
         return view('pages/users', compact('users'));
     }
 
@@ -161,7 +213,7 @@ class UserController extends Controller
         $user->updated_at = now();
         $user->save();
 
-        return redirect('/')->with('success', 'User updated successfully!');
+        return redirect('/dashboard')->with('success', 'User updated successfully!');
     }
 
 
@@ -172,7 +224,7 @@ class UserController extends Controller
         if ($users) {
             $users->status = 0;
             $users->save();
-            return redirect('/')->with('success', 'Users Deleted successfully');
+            return redirect('/dashboard')->with('success', 'Users Deleted successfully');
         }
         return redirect('/users_list')->with('error', 'Product not found');
     }
@@ -211,7 +263,17 @@ class UserController extends Controller
         return redirect('/profile')->with('error', 'User not found');
     }
 
-    public function user_signin(){
+    public function user_signin()
+    {
         return view('auth.userslogin');
+    }
+
+
+    public function user_logout()
+    {
+        Auth::logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect('/signin')->with('status', 'You have been logged out.');
     }
 }

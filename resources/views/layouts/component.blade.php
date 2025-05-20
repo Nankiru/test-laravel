@@ -16,13 +16,47 @@
     <link rel="stylesheet" href="{{ asset('assets1/css/tiny-slider.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets1/css/glightbox.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets1/css/main.css') }}" />
+    <link href="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css') }}"
+        rel="stylesheet">
 
-    @stack('styles') {{-- Optional stack for page-specific CSS --}}
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    {{-- <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" /> --}}
+    <link href="{{ asset('https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css') }}" rel="stylesheet">
+    {{-- <script src="{{ asset('https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js') }}"></script> --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
 </head>
 
 <body>
 
+
+
+    <!-- Bootstrap 5 Bundle with Popper -->
+    <script src="{{ asset('https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js') }}"></script>
+
+
+
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Suwannaphum:wght@100;300;400;700;900&display=swap');
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 100px;
+        }
+
+        .font-khmer {
+            font-family: "Suwannaphum", serif;
+        }
+
+        .font-khmer-loy {
+            font-family: "Suwannaphum", serif;
+            font-weight: 300;
+            font-style: normal;
+        }
+
         .btn-primary:hover {
             background-color: #0056b3;
             /* A darker blue for the hover effect */
@@ -100,79 +134,134 @@
         <div class="topbar">
             <div class="container">
                 <div class="row align-items-center">
+                    <!-- Container -->
                     <div class="col-lg-4 col-md-4 col-12">
                         <div class="top-left">
-                            <ul class="menu-top-link">
-                                <li>
-                                    <div class="select-position">
-                                        <select id="select4">
-                                            <option value="0" selected>$ USD</option>
-                                            <option value="1">€ EURO</option>
-                                            <option value="2">$ CAD</option>
-                                            <option value="3">₹ INR</option>
-                                            <option value="4">¥ CNY</option>
-                                            <option value="5">৳ BDT</option>
-                                        </select>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="select-position">
-                                        <select id="select5">
-                                            <option value="0" selected>English</option>
-                                            <option value="1">Español</option>
-                                            <option value="2">Filipino</option>
-                                            <option value="3">Français</option>
-                                            <option value="4">العربية</option>
-                                            <option value="5">हिन्दी</option>
-                                            <option value="6">বাংলা</option>
-                                        </select>
-                                    </div>
+                            <ul class="list-unstyled mb-0 font-khmer-loy">
+                                <li class="dropdown text-center ">
+                                    @php
+                                        $langs = [
+                                            'en' => ['name' => 'English', 'flag' => 'gb'],
+                                            'khmer' => ['name' => 'ខ្មែរ', 'flag' => 'kh'],
+                                            'ch' => ['name' => '中文', 'flag' => 'ch'],
+                                        ];
+                                        $currentLocale = Session::get('locale', 'en');
+                                        $currentLang = $langs[$currentLocale] ?? $langs['en'];
+                                    @endphp
+
+                                    <button
+                                        class="btn btn-light dropdown-toggle d-flex align-items-center gap-2 border border-gray-300 rounded-pill px-3 py-2"
+                                        type="button" id="languageDropdown" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                        <img src="https://flagcdn.com/w20/{{ $currentLang['flag'] }}.png"
+                                            alt="{{ $currentLocale }}" class="rounded-sm" width="20"
+                                            height="14">
+                                        {{ $currentLang['name'] }}
+                                    </button>
+
+                                    <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+                                        @foreach ($langs as $code => $lang)
+                                            <li>
+                                                <a class="dropdown-item d-flex align-items-center gap-2 justify-content-center"
+                                                    href="{{ route('lang.changelang', ['changelang' => $code]) }}">
+                                                    <img src="https://flagcdn.com/w20/{{ $lang['flag'] }}.png"
+                                                        alt="{{ $code }}" class="rounded-sm" width="20"
+                                                        height="14">
+                                                    {{ $lang['name'] }}
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
                                 </li>
                             </ul>
                         </div>
                     </div>
+
+
+
+
                     <div class="col-lg-4 col-md-4 col-12">
                         <div class="top-middle">
                             <ul class="useful-links">
-                                <li><a href="{{url('index')}}">Home</a></li>
-                                <li><a href="about-us.html">About Us</a></li>
-                                <li><a href="contact.html">Contact Us</a></li>
+                                <li><a class="font-khmer"
+                                        href="{{ url('index') }}">{{ __('frontend/messages.home') }}</a></li>
+                                <li><a class="font-khmer"
+                                        href="about-us.html">{{ __('frontend/messages.about_us') }}</a></li>
+                                <li><a class="font-khmer"
+                                        href="{{ url('ContactUs') }}">{{ __('frontend/messages.contact_us') }}</a>
+                                </li>
                             </ul>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-4 col-12">
                         <div class="top-end">
-                            <div class="user">
+                            <div class="user ">
                                 <i class="lni lni-user"></i>
-                                Hello {{session('name_user')}}
+                                <span class="font-khmer">{{ __('frontend/messages.hello') }} @if (Auth::check())
+                                        {{ Auth::user()->name }}
+                                    @endif
+                                </span>
                             </div>
                             <ul class="user-login">
+                                {{-- <a class="font-khmer"
+                                    href="{{ url('signin') }}">{{ __('frontend/messages.signin') }}</a> --}}
                                 <li>
-                                    @guest
-                                        <a href="{{ url('signin') }}">Sign In</a>
-                                    @endguest
-
-                                    @auth
-                                        <form method="POST" action="{{ url('logout') }}">
-                                            @csrf
-                                            <button type="submit"
-                                                style="background: none; border: none; padding: 0; cursor: pointer; color: #007bff;">
-                                                Logout
-                                            </button>
-                                        </form>
-                                    @endauth
+                                    @if (auth()->check())
+                                        <a class="font-khmer"
+                                            href="{{ url('register') }}">{{ __('frontend/messages.register') }}</a>
+                                    @else
+                                        <a class="font-khmer"
+                                            href="{{ url('signin') }}">{{ __('frontend/messages.signin') }}</a>
+                                    @endif
+                                </li>
+                                <li>
+                                    <a href="#" class="font-khmer" onclick="confirmLogout(event)">
+                                        {{ __('frontend/messages.logout') }}
+                                    </a>
                                 </li>
 
 
-                                <li>
-                                    <a href="register.html">Register</a>
-                                </li>
+
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        {{-- Logout alert Modal --}}
+
+        <script>
+            function confirmLogout(event) {
+                event.preventDefault();
+                Swal.fire({
+                    title: '{{ __('frontend/messages.logout_confirm_title') }}',
+                    text: '{{ __('frontend/messages.logout_confirm_text') }}',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: '{{ __('frontend/messages.logout_confirm_button') }}',
+                    cancelButtonText: '{{ __('frontend/messages.cancel') }}',
+                    customClass: {
+                        popup: 'font-khmer text-base',
+                        title: 'font-khmer text-lg font-semibold',
+                        htmlContainer: 'font-khmer',
+                        confirmButton: 'font-khmer',
+                        cancelButton: 'font-khmer'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{{ url('user_logout') }}";
+                    }
+                });
+            }
+        </script>
+
+
+
+
+
         <!-- End Topbar -->
         <!-- Start Header Middle -->
         <div class="header-middle">
@@ -180,8 +269,8 @@
                 <div class="row align-items-center">
                     <div class="col-lg-3 col-md-3 col-7">
                         <!-- Start Header Logo -->
-                        <a class="navbar-brand" href="{{url('index')}}">
-                            <img src="{{asset('assets1/images/logo/logo.svg')}}" alt="Logo">
+                        <a class="navbar-brand" href="{{ url('/') }}">
+                            <img src="{{ asset('assets1/images/logo/logo.svg') }}" alt="Logo">
                         </a>
                         <!-- End Header Logo -->
                     </div>
@@ -192,27 +281,36 @@
                             <div class="navbar-search search-style-5">
                                 <div class="search-select">
                                     <div class="select-position">
-                                        <select id="select1" class="form-select">
-                                            <option selected disabled>Select Category</option>
-                                            <option value="Laptops">Laptops</option>
-                                            <option value="Tablets">Tablets</option>
-                                            <option value="Smartphones">Smartphones</option>
+                                        <select id="select1" class="form-select form-control modern-input font-khmer"
+                                            name="category" required>
+                                            <option class="font-khmer" selected disabled>
+                                                {{ __('frontend/messages.select_category') }}
+                                            </option>
+                                            <option class="font-khmer" value="Laptops">
+                                                {{ __('frontend/messages.laptops') }}</option>
+                                            <option class="font-khmer" value="Tablets">
+                                                {{ __('frontend/messages.tablets') }}</option>
+                                            <option class="font-khmer" value="Smartphones"><a
+                                                    href="{{ url('all-product/Smartphones') }}">{{ __('frontend/messages.smartphones') }}</a>
+                                            </option>
+
                                         </select>
-                                        
+
                                         <script>
-                                            document.getElementById('select1').addEventListener('change', function () {
+                                            document.getElementById('select1').addEventListener('change', function() {
                                                 const selectedCategory = this.value;
                                                 if (selectedCategory) {
                                                     window.location.href = '/all-product/' + selectedCategory;
                                                 }
                                             });
                                         </script>
-                                        
+
                                     </div>
                                 </div>
-                                <form method="GET" action="{{url('search_index')}}" class="d-flex">
+                                <form method="GET" action="{{ url('search_index') }}" class="d-flex">
                                     <div class="search-input">
-                                        <input type="text" placeholder="Search" name="search"
+                                        <input class="font-khmer-loy" type="text"
+                                            placeholder="{{ __('frontend/messages.search') }}" name="search"
                                             value="{{ request('search') }}">
                                     </div>
                                     <div class="search-btn">
@@ -247,22 +345,26 @@
 
                                     <!-- Shopping Item -->
                                     <div class="shopping-item">
-                                        <div class="dropdown-cart-header d-flex justify-content-between">
+                                        <div class="dropdown-cart-header d-flex justify-content-between font-khmer">
                                             <span>{{ count(session('cart', [])) }}
-                                                Item{{ count(session('cart', [])) > 1 ? 's' : '' }}</span>
-                                            <a href="{{ url('/cart-view') }}">View Cart</a>
+                                                {{ __('frontend/messages.item') }}
+                                                {{ count(session('cart', [])) > 1 ? "'s" : '' }}</span>
+                                            <a href="{{ url('/cart-view') }}">{{ __('frontend/messages.view_cart') }}
+                                            </a>
                                         </div>
 
-                                        @if(count(session('cart', [])) > 0)
+                                        @if (count(session('cart', [])) > 0)
                                             <ul class="shopping-list">
-                                                @foreach(session('cart', []) as $id => $item)
+                                                @foreach (session('cart', []) as $id => $item)
                                                     <li>
-                                                        <a href="javascript:void(0)" class="remove" title="Remove this item"
+                                                        <a href="javascript:void(0)" class="remove"
+                                                            title="Remove this item"
                                                             onclick="removeFromCart({{ $id }})">
                                                             <i class="lni lni-close"></i>
                                                         </a>
                                                         <div class="cart-img-head">
-                                                            <a class="cart-img" href="{{ url('/product-details/' . $id) }}">
+                                                            <a class="cart-img"
+                                                                href="{{ url('/product-detail', $id) }}">
                                                                 {{-- <img
                                                                     src="{{ asset('uploads/products/galaries/' . $item['image']) }}"
                                                                     alt="{{ $item['name'] }}"> --}}
@@ -273,7 +375,7 @@
                                                         <div class="content">
                                                             <h4>
                                                                 <a
-                                                                    href="{{ url('/product-details/' . $id) }}">{{ $item['name'] }}</a>
+                                                                    href="{{ url('/product-detail', $id) }}">{{ $item['name'] }}</a>
                                                             </h4>
                                                             <p class="quantity">
                                                                 {{ $item['quantity'] }}x -
@@ -294,12 +396,14 @@
                                                     </span>
                                                 </div>
                                                 <div class="button">
-                                                    <a href="{{ url('/checkout') }}" class="btn animate">Checkout</a>
+                                                    <a href="{{ url('/checkout') }}"
+                                                        class="btn animate font-khmer">{{ __('frontend/messages.checkout') }}</a>
                                                 </div>
                                             </div>
                                         @else
-                                            <div class="p-3 text-center text-muted">
-                                                <small>Your cart is empty.</small>
+                                            <div class="p-3 text-center text-muted font-khmer-loy">
+                                                <small
+                                                    class="">{{ __('frontend/messages.your_cart_is_empty') }}</small>
                                             </div>
                                         @endif
                                     </div>
@@ -322,7 +426,8 @@
                     <div class="nav-inner">
                         <!-- Start Mega Category Menu -->
                         <div class="mega-category-menu">
-                            <span class="cat-button"><i class="lni lni-menu"></i>All Brand</span>
+                            <span class="cat-button font-khmer"><i
+                                    class="lni lni-menu"></i>{{ __('frontend/messages.all_brand') }}</span>
                             <ul class="sub-category">
                                 {{-- <li><a href="{{ url('all-product') }}">All Products</a></li> --}}
                                 <li><a href="#">Laptops <i class="lni lni-chevron-right"></i></a>
@@ -370,15 +475,18 @@
                                         </li>
                                         <li><a href="{{ url('all-product/Accessories/Phone Charger') }}">Phone
                                                 Charger</a></li>
-                                        <li><a href="{{ url('all-product/Accessories/Earphones') }}">Earphones</a></li>
-                                        <li><a href="{{ url('all-product/Accessories/Headphone') }}">Headphone</a></li>
+                                        <li><a href="{{ url('all-product/Accessories/Earphones') }}">Earphones</a>
+                                        </li>
+                                        <li><a href="{{ url('all-product/Accessories/Headphone') }}">Headphone</a>
+                                        </li>
                                         <li><a href="{{ url('all-product/Accessories/Speaker') }}">Speaker</a></li>
                                         <li><a href="{{ url('all-product/Accessories/iPad & Tablet Case') }}">iPad &
                                                 Tablet Case</a></li>
 
                                     </ul>
                                 </li>
-                                <li><a href="product-grids.html">Smart Watches<i class="lni lni-chevron-right"></i></a>
+                                <li><a href="product-grids.html">Smart Watches<i
+                                            class="lni lni-chevron-right"></i></a>
                                     <ul class="inner-sub-category">
                                         <li><a href="{{ url('all-product/Watches/Apple') }}">Apple Watch</a></li>
                                         <li><a href="{{ url('all-product/Watches/Samsung') }}">Samsung Watch</a></li>
@@ -408,26 +516,34 @@
                             <div class="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent">
                                 <ul id="nav" class="navbar-nav ms-auto">
                                     <li class="nav-item">
-                                        <a href="{{url('index')}}" class="active"
-                                            aria-label="Toggle navigation">Home</a>
+                                        <a href="{{ url('index') }}" class="active font-khmer"
+                                            aria-label="Toggle navigation">{{ __('frontend/messages.home') }}</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="dd-menu collapsed" href="javascript:void(0)" data-bs-toggle="collapse"
-                                            data-bs-target="#submenu-1-2" aria-controls="navbarSupportedContent"
-                                            aria-expanded="false" aria-label="Toggle navigation">Pages</a>
+                                        <a class="dd-menu collapsed font-khmer" href="javascript:void(0)"
+                                            data-bs-toggle="collapse" data-bs-target="#submenu-1-2"
+                                            aria-controls="navbarSupportedContent" aria-expanded="false"
+                                            aria-label="Toggle navigation">{{ __('frontend/messages.page') }}</a>
                                         <ul class="sub-menu collapse" id="submenu-1-2">
-                                            <li class="nav-item"><a href="about-us.html">About Us</a></li>
-                                            <li class="nav-item"><a href="faq.html">Faq</a></li>
-                                            <li class="nav-item"><a href="login.html">Login</a></li>
-                                            <li class="nav-item"><a href="register.html">Register</a></li>
-                                            <li class="nav-item"><a href="mail-success.html">Mail Success</a></li>
-                                            <li class="nav-item"><a href="404.html">404 Error</a></li>
+                                            <li class="nav-item font-khmer"><a
+                                                    href="about-us.html">{{ __('frontend/messages.about_us') }}</a>
+                                            </li>
+                                            <li class="nav-item font-khmer"><a href="faq.html">Faq</a></li>
+                                            <li class="nav-item font-khmer"><a
+                                                    href="login.html">{{ __('frontend/messages.signin') }}</a></li>
+                                            <li class="nav-item font-khmer"><a
+                                                    href="{{ url('login') }} }}">{{ __('frontend/messages.register') }}</a>
+                                            </li>
+                                            <li class="nav-item font-khmer"><a href="mail-success.html">Mail
+                                                    Success</a></li>
+                                            <li class="nav-item font-khmer"><a href="404.html">404 Error</a></li>
                                         </ul>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="dd-menu collapsed" href="javascript:void(0)" data-bs-toggle="collapse"
-                                            data-bs-target="#submenu-1-3" aria-controls="navbarSupportedContent"
-                                            aria-expanded="false" aria-label="Toggle navigation">Shop</a>
+                                        <a class="dd-menu collapsed" href="javascript:void(0)"
+                                            data-bs-toggle="collapse" data-bs-target="#submenu-1-3"
+                                            aria-controls="navbarSupportedContent" aria-expanded="false"
+                                            aria-label="Toggle navigation">Shop</a>
                                         <ul class="sub-menu collapse" id="submenu-1-3">
                                             <li class="nav-item"><a href="product-grids.html">Shop Grid</a></li>
                                             <li class="nav-item"><a href="product-list.html">Shop List</a></li>
@@ -437,22 +553,38 @@
                                         </ul>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="dd-menu collapsed" href="javascript:void(0)" data-bs-toggle="collapse"
-                                            data-bs-target="#submenu-1-4" aria-controls="navbarSupportedContent"
-                                            aria-expanded="false" aria-label="Toggle navigation">Brand</a>
+                                        <a class="dd-menu collapsed font-khmer" href="javascript:void(0)"
+                                            data-bs-toggle="collapse" data-bs-target="#submenu-1-4"
+                                            aria-controls="navbarSupportedContent" aria-expanded="false"
+                                            aria-label="Toggle navigation">{{ __('frontend/messages.brand') }}</a>
                                         <ul class="sub-menu collapse" id="submenu-1-4">
-                                            <li class="nav-item"><a href="blog-grid-sidebar.html">Apple</a>
+                                            <li class="nav-item"><a
+                                                    href="blog-grid-sidebar.html">{{ __('frontend/messages.apple') }}</a>
                                             </li>
-                                            <li class="nav-item"><a href="blog-single.html">Sumsung</a></li>
-                                            <li class="nav-item"><a href="blog-single-sidebar.html">Huawei</a></li>
-                                            <li class="nav-item"><a href="blog-single-sidebar.html">Oppo</a></li>
-                                            <li class="nav-item"><a href="blog-single-sidebar.html">LG</a></li>
-                                            <li class="nav-item"><a href="blog-single-sidebar.html">Vivo</a></li>
-                                            <li class="nav-item"><a href="blog-single-sidebar.html">Realme</a></li>
+                                            <li class="nav-item"><a
+                                                    href="blog-single.html">{{ __('frontend/messages.samsung') }}</a>
+                                            </li>
+                                            <li class="nav-item"><a
+                                                    href="blog-single-sidebar.html">{{ __('frontend/messages.huawei') }}</a>
+                                            </li>
+                                            <li class="nav-item"><a
+                                                    href="{{ url('all-product/Smartphone/Oppo') }}">{{ __('frontend/messages.oppo') }}</a>
+                                            </li>
+                                            <li class="nav-item"><a
+                                                    href="blog-single-sidebar.html">{{ __('frontend/messages.lg') }}</a>
+                                            </li>
+                                            <li class="nav-item"><a
+                                                    href="blog-single-sidebar.html">{{ __('frontend/messages.vivo') }}</a>
+                                            </li>
+                                            <li class="nav-item"><a
+                                                    href="blog-single-sidebar.html">{{ __('frontend/messages.realme') }}</a>
+                                            </li>
                                         </ul>
                                     </li>
+
                                     <li class="nav-item">
-                                        <a href="contact.html" aria-label="Toggle navigation">Contact Us</a>
+                                        <a class="font-khmer" href="{{ url('ContactUs') }}"
+                                            aria-label="Toggle navigation">{{ __('frontend/messages.contact_us') }}</a>
                                     </li>
                                 </ul>
                             </div> <!-- navbar collapse -->
@@ -463,7 +595,7 @@
                 <div class="col-lg-4 col-md-6 col-12">
                     <!-- Start Nav Social -->
                     <div class="nav-social">
-                        <h5 class="title">Follow Us:</h5>
+                        <h5 class="title font-khmer-loy">{{ __('frontend/messages.follow_us') }}</h5>
                         <ul>
                             <li>
                                 <a href="javascript:void(0)"><i class="lni lni-facebook-filled"></i></a>
@@ -764,8 +896,8 @@
                     <div class="row">
                         <div class="col-lg-3 col-md-4 col-12">
                             <div class="footer-logo">
-                                <a href="{{url('index')}}">
-                                    <img src="{{asset('assets1/images/logo/white-logo.svg')}}" alt="#">
+                                <a href="{{ url('index') }}">
+                                    <img src="{{ asset('assets1/images/logo/white-logo.svg') }}" alt="#">
                                 </a>
                             </div>
                         </div>
@@ -798,7 +930,7 @@
                         <div class="col-lg-3 col-md-6 col-12">
                             <!-- Single Widget -->
                             <div class="single-footer f-contact">
-                                <h3>Get In Touch With Us</h3>
+                                <h3 class="font-khmer">{{ __('frontend/messages.get_touch') }}</h3>
                                 <p class="phone">Phone: (+855) 090207392</p>
                                 <ul>
                                     <li><span>Monday-Friday: </span> 9.00 am - 8.00 pm</li>
@@ -813,7 +945,7 @@
                         <div class="col-lg-3 col-md-6 col-12">
                             <!-- Single Widget -->
                             <div class="single-footer our-app">
-                                <h3>Our Mobile App</h3>
+                                <h3 class="font-khmer">{{ __('frontend/messages.our_mobile_app') }}</h3>
                                 <ul class="app-btn">
                                     <li>
                                         <a href="javascript:void(0)">
@@ -836,13 +968,13 @@
                         <div class="col-lg-3 col-md-6 col-12">
                             <!-- Single Widget -->
                             <div class="single-footer f-link">
-                                <h3>Products</h3>
+                                <h3 class="font-khmer">{{ __('frontend/messages.products') }}</h3>
                                 <ul>
-                                    <li><a href="javascript:void(0)">Laptops</a></li>
-                                    <li><a href="javascript:void(0)">Tablets</a></li>
-                                    <li><a href="javascript:void(0)">Smartphones</a></li>
-                                    <li><a href="javascript:void(0)">Accessories</a></li>
-                                    <li><a href="javascript:void(0)">Watches</a></li>
+                                    <li><a href="{{ url('all-product/Laptops') }}">Laptops</a></li>
+                                    <li><a href="{{ url('all-product/Tablets') }}">Tablets</a></li>
+                                    <li><a href="{{ url('all-product/Smartphones') }}">Smartphones</a></li>
+                                    <li><a href="{{ url('all-product/Accessories') }}">Accessories</a></li>
+                                    <li><a href="{{ url('all-product/Watches') }}">Watches</a></li>
                                 </ul>
                             </div>
                             <!-- End Single Widget -->
@@ -850,7 +982,7 @@
                         <div class="col-lg-3 col-md-6 col-12">
                             <!-- Single Widget -->
                             <div class="single-footer f-link">
-                                <h3>Shop Departments</h3>
+                                <h3 class="font-khmer">{{ __('frontend/messages.shop_departments') }}</h3>
                                 <ul>
                                     <li><a href="javascript:void(0)">Computers & Accessories</a></li>
                                     <li><a href="javascript:void(0)">Smartphones & Tablets</a></li>
@@ -874,7 +1006,8 @@
                         <div class="col-lg-4 col-12">
                             <div class="payment-gateway">
                                 <span>We Accept:</span>
-                                <img src="assets1/images/footer/credit-cards-footer.png" alt="#">
+                                <img src="{{ url('assets1/images/footer/credit-cards-footer.png') }}"
+                                    alt="#">
                             </div>
                         </div>
                         <div class="col-lg-4 col-12">
@@ -886,7 +1019,7 @@
                         <div class="col-lg-4 col-12">
                             <ul class="socila">
                                 <li>
-                                    <span>Follow Us On:</span>
+                                    <span class="font-khmer-loy">{{ __('frontend/messages.follow_us') }}</span>
                                 </li>
                                 <li><a href="javascript:void(0)"><i class="lni lni-facebook-filled"></i></a></li>
                                 <li><a href="javascript:void(0)"><i class="lni lni-twitter-original"></i></a></li>
@@ -907,13 +1040,18 @@
         <i class="lni lni-chevron-up"></i>
     </a>
 
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+
     <!-- ========================= JS here ========================= -->
     <script src="assets1/js/bootstrap.min.js"></script>
     <script src="assets1/js/tiny-slider.js"></script>
     <script src="assets1/js/glightbox.min.js"></script>
     <script src="assets1/js/main.js"></script>
     <script type="text/javascript">
-        //========= Hero Slider 
+        //========= Hero Slider
         tns({
             container: '.hero-slider',
             slideBy: 'page',
@@ -956,13 +1094,13 @@
     <script>
         function addToCart(id) {
             fetch(`/add_to_cart/${id}`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => response.json())
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => response.json())
                 .then(data => {
                     // Optionally show a success message
                     alert(data.message);
@@ -978,12 +1116,12 @@
     <script>
         function removeFromCart(id) {
             fetch(`/remove_from_cart/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json'
-                }
-            })
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                })
                 .then(response => response.json())
                 .then(data => {
                     alert(data.message);
@@ -1000,7 +1138,7 @@
         const preloader = document.querySelector('.preloader');
         const startTime = performance.now();
 
-        window.addEventListener('load', function () {
+        window.addEventListener('load', function() {
             const loadTime = performance.now() - startTime;
 
             if (loadTime > 1500) {
@@ -1014,6 +1152,12 @@
             }
         });
     </script>
+    <script src="{{ asset('https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js') }}"></script>
+
+    {{-- <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet"> --}}
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
 </body>
 
 </html>

@@ -11,11 +11,13 @@ class UserAuth
 {
     public function handle(Request $request, Closure $next)
     {
-    if (!$request->session()->get('id')) {
-        return redirect('/login');
+
+        if (!Auth::check()) {
+            return redirect('/login');
+        }
+        return $next($request);
     }
-    return $next($request);
 }
-}
-
-
+// if (!$request->session()->get('id')) {
+//     return redirect('/login');
+// }

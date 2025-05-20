@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Product;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -13,22 +14,22 @@ class ProductController extends Controller
             'brand' => 'required|string|max:255',
             'category' => 'required|string|max:255',
         ]);
-    
+
         // Check if brand and category already exist
         $exists = Product::where('brand', $request->brand)
                          ->where('category', $request->category)
                          ->exists();
-    
+
         if ($exists) {
             return redirect()->back()->with('error', 'This brand and category already exist.');
         }
-    
+
         // Save new brand/category
         $add = new Product();
         $add->brand = $request->brand;
         $add->category = $request->category;
         $add->save();
-    
+
         return redirect()->back()->with('success', 'Brand and category added successfully.');
 
     }
@@ -41,10 +42,10 @@ class ProductController extends Controller
     public function index()
     {
         // $productsall = Product::where('status', 1)->paginate(8);
-        $products = Product::where('status', 1)->orderBy('id', 'desc')->paginate(8);
+        $products = Product::where('status', 1)->orderBy('id', 'desc')->paginate(1000);
         $new_products = Product::where('status', 1)->orderBy('id', 'desc')->whereDate('created_at', \Carbon\Carbon::today())->paginate(8);
-        $laptops = Product::where('category', 'Laptops')->orderBy('id', 'desc')->paginate(8);
-        $smartphones = Product::where('category', 'Smartphone')
+        $laptops = Product::where('category', 'Laptops')->where('status',1)->orderBy('id', 'desc')->paginate(8);
+        $smartphones = Product::where('category', 'Smartphone')->where('status',1)
             ->orderBy('id', 'desc')
             ->paginate(8);
         $tablets = Product::where('category', 'Tablet')->orderBy('id', 'DESC')->paginate(8);
@@ -58,6 +59,10 @@ class ProductController extends Controller
         $products->price = $request->price;
         $products->discount_price = $request->discount_price;
         $products->storage = $request->storage;
+        $products->ram = $request->ram;
+        $products->screen_size = $request->screen_size;
+        $products->cpu = $request->cpu;
+        $products->os = $request->os;
         $products->ram = $request->ram;
         $products->tags = $request->tags;
         $products->stock = $request->stock;
@@ -80,10 +85,7 @@ class ProductController extends Controller
         $request->file('img3')->move(public_path('uploads/products/mainimages/'), $img3);
         $products->img3 = $img3;
 
-        $img4 = $request->file('img4')->getClientOriginalName();
-        $request->file('img4')->move(public_path('uploads/products/mainimages/'), $img4);
-        $products->img4 = $img4;
-        // $products->gallery_images = json_encode([$mainImage]);
+
 
 
         $products->created_at = now();
@@ -91,7 +93,7 @@ class ProductController extends Controller
 
         $products->save();
         if ($products) {
-            return redirect('/')->with('success', 'Product ' . $products->name . ' add Successfully!');
+            return redirect('/dashboard')->with('success', 'Product ' . $products->name . ' add Successfully!');
         } else {
             return redirect('/form_product')->with('error', 'Product ' . $products->name . " don't add Successfully!");
         }
@@ -141,7 +143,7 @@ class ProductController extends Controller
     {
         return view('pages.cart');
     }
-    
+
 
     public function ProductDetail($id)
     {
@@ -151,8 +153,9 @@ class ProductController extends Controller
             ->where('id', '!=', $id)
             ->take(5)
             ->get();
+            $comments = Comment::with('user')->latest()->get();
 
-        return view('details/product-detail', compact('product_detail', 'similar_items'));
+        return view('details/product-detail', compact('product_detail', 'similar_items','comments'));
     }
 
 
@@ -163,6 +166,15 @@ class ProductController extends Controller
             ->get();
 
         return view('customerpage/all-product', compact('products', 'category', 'brand'));
+    }
+
+    // ⁡⁢⁣⁢filterByCategory⁡
+    public function filterByCategory($category)
+    {
+        $products = Product::where('category', $category)
+            ->get();
+
+        return view('customerpage/all-product', compact('products', 'category'));
     }
 
     /**
@@ -176,11 +188,11 @@ class ProductController extends Controller
         if ($products) {
             $products->status = 0;
             $products->save();
-            return redirect('/')->with('success', 'Product deleted successfully');
+            return redirect('/dashboard')->with('success', 'Product deleted successfully');
         }
         return redirect('/product')->with('error', 'Product not found');
     }
-    
+
     public function UpdateProduct($id, Request $request)
 {
     $products = Product::find($id);

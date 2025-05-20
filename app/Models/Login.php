@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Login extends Model
 {
     protected $table = 'admins';
-    protected $guard = 'id';
+
+    protected $fillable = ['name', 'email', 'password'];
 
 
 }

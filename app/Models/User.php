@@ -18,14 +18,10 @@ class User extends Authenticatable
      * @var list<string>
      */
 
-    protected $table = 'tbl_users';
+    protected $table = 'users';
 
     protected $fillable = ['name', 'email', 'position', 'salary', 'dob', 'province', 'country'];
 
-    public function isAdmin()
-    {
-        return $this->role === 'admins';
-    }
     protected $guard = 'id';
     // protected $fillable = [
     //     'name',

@@ -22,7 +22,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Paginator::useBootstrap(); 
+        // $this->loadTranslationsFrom(resource_path('lang/frontend'), 'frontend');
+        // \Illuminate\Support\Facades\App::setLocale('km');
+
+        Paginator::useBootstrap();
         if (config('app.env') !== 'local') {
             URL::forceScheme('https');
         }

@@ -106,11 +106,11 @@
     </script>
   @endif
 
-  @if (session('status'))
+  @if (session('error'))
     <script>
     Swal.fire({
       title: 'Login Failed',
-      text: "{{ session('status') }}",
+      text: "{{ session('error') }}",
       icon: 'error',
       confirmButtonText: 'Try Again'
     });
@@ -140,9 +140,6 @@
               <i class="fa fa-envelope absolute left-3 top-2.5 text-gray-400"></i>
               <input type="email" placeholder="Email address" name="email"
                 class="pl-10 pr-3 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-400 outline-none transition-all" />
-              @error('email')
-          <p>{{$message}}</p>
-        @enderror
             </div>
             <div class="relative">
               <i class="fa fa-lock absolute left-3 top-3 text-gray-400"></i>
@@ -154,10 +151,6 @@
               <!-- Eye icon -->
               <i class="far fa-eye absolute right-3 top-3 text-gray-500 cursor-pointer"
                 id="show-password-toggle-icon"></i>
-
-              @error('password')
-          <p class="text-red-500 text-sm mt-1">{{$message}}</p>
-        @enderror
             </div>
             <button type="submit"
               class="w-full bg-cyan-500 hover:bg-cyan-600 transition text-white py-2 rounded-lg font-semibold">
@@ -249,7 +242,7 @@
           </div>
           <div class="relative">
             <i class="fa fa-lock absolute left-3 top-2.5 text-gray-400"></i>
-            <input type="password" placeholder="Password"
+            <input type="password" placeholder="Password" name="password"
               class="pl-10 pr-10 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-400 outline-none transition-all"
               id="signup-password" />
             <i class="fa fa-eye absolute right-3 top-2.5 text-gray-500 cursor-pointer"

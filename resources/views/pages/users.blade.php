@@ -73,19 +73,19 @@
         <thead class="bg-light">
           <tr>
             <th>Image</th>
-            <th>{{__('messages.name_email')}}</th>
-            <th class="text-center">{{__('messages.position')}}</th>
-            <th class="text-center">{{__('messages.salary')}}</th>
-            <th class="text-center">{{__('messages.location')}}</th>
-            <th class="text-center" style="white-space: nowrap; vertical-align: center;">{{__('messages.bod')}}</th>
-            <th class="text-center">{{__('messages.action')}}</th>
+            <th>Name/Email</th>
+            <th class="text-center">Position</th>
+            <th class="text-center">Salary</th>
+            <th class="text-center">Location</th>
+            <th class="text-center" style="white-space: nowrap; vertical-align: center;">Date of Birth</th>
+            <th class="text-center">Action</th>
           </tr>
         </thead>
         <tbody>
           @forelse ($users as $items)
           <tr>
             <td>
-              <img src="{{ asset('uploads/' . $items->img) }}" alt="Profile" class="rounded-circle" style="width: 60px; height: 55px;" />
+              <img src="{{ asset('uploads/users/' . $items->img) }}" alt="Profile" class="rounded-circle" style="width: 60px; height: 55px;" />
             </td>
             <td>
               <div class="text-start">
@@ -107,7 +107,7 @@
                 </a>
               </div>
             </td>
-            
+
           </tr>
           @empty
           <tr>
@@ -118,7 +118,7 @@
       </table>
     </div>
   </div>
-  
+
 
   <!-- Pagination Links -->
   <div class="mt-4 d-flex justify-content-center">
