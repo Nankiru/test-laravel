@@ -77,7 +77,7 @@ class ProductController extends Controller
         $image = Cloudinary::upload($request->file('image')->getRealPath(), [
             'folder' => 'mainImg',
         ])->getSecurePath();
-        $products->image = $image;
+        dd($products->image = $image);
 
 
         // $img1 = $request->file('img1')->getClientOriginalName();
