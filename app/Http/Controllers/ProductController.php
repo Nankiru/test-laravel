@@ -84,31 +84,20 @@ class ProductController extends Controller
 
         // ✅ Upload main image to Cloudinary
         if ($request->hasFile('image')) {
-            try {
-                $mainImageUrl = Cloudinary::upload(
-                    $request->file('image')->getRealPath(),
-                    ['folder' => 'products/mainimages']
-                )->getSecurePath();
-                $product->image = $mainImageUrl;
-            } catch (\Exception $e) {
-                return back()->with('error', 'Main image upload failed: ' . $e->getMessage());
-            }
+            $imageUrl = Cloudinary::upload($request->file('image')->getRealPath())->getSecurePath();
+            $product->image = $imageUrl;
         }
 
-        // ✅ Upload gallery images to Cloudinary
-        foreach (['img1', 'img2', 'img3'] as $key) {
-            if ($request->hasFile($key)) {
-                try {
-                    $uploadedUrl = Cloudinary::upload(
-                        $request->file($key)->getRealPath(),
-                        ['folder' => 'products/galleries']
-                    )->getSecurePath();
-                    $product->$key = $uploadedUrl;
-                } catch (\Exception $e) {
-                    return back()->with('error', 'Failed to upload ' . $key . ': ' . $e->getMessage());
-                }
-            }
-        }
+        // // ✅ Upload gallery images to Cloudinary
+        // foreach (['img1', 'img2', 'img3'] as $key) {
+        //     if ($request->hasFile($key)) {
+        //         $url = Cloudinary::upload(
+        //             $request->file($key)->getRealPath(),
+        //             ['folder' => 'products/galleries']
+        //         )->getSecurePath();
+        //         $product->$key = $url;
+        //     }
+        // }
 
         $product->created_at = now();
         $product->updated_at = now();
